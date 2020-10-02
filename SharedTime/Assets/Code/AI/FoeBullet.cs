@@ -33,6 +33,7 @@ public class FoeBullet : MonoBehaviour
         {
             DestroyProjectie();
             Gm.setDamage(damageDealt);
+            Debug.Log(Gm.playerHealth);
         }
     }
     void DestroyProjectie()

@@ -10,6 +10,7 @@ public class GameManager : MonoBehaviour
 	public float SprintTime = 30;
 	public bool sprint;
 	private bool exhausted = false;
+	public float keys;
 	// Start is called before the first frame update
 	void Start()
 	{

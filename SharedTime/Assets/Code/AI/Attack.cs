@@ -55,12 +55,12 @@ public class Attack : MonoBehaviour
 
         if (P.FoeFlipped)
         {
-            transform.localScale = new Vector3(-1f, 1f, 1f);
+            //transform.localScale = new Vector3(-1f, 1f, 1f);
         }
 
         if (P.FoeFlipped == false)
         {
-            transform.localScale = new Vector3(1f, 1f, 1f);
+            //transform.localScale = new Vector3(1f, 1f, 1f);
         }
     }
 

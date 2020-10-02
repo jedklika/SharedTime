@@ -6,14 +6,14 @@ public class AISwap : MonoBehaviour
 {
     // Start is called before the first frame update
     public bool Right;
-    //public SpriteRenderer LightFoe;
-    //public bool flipped;
+    public SpriteRenderer LightFoe;
+    public bool flipped;
     // Start is called before the first frame update
     void Start()
     {
         GetComponentInParent<Patrol>().enabled = true;
         GetComponentInParent<Attack>().enabled = false;
-        //LightFoe = GetComponentInParent<SpriteRenderer>();
+        LightFoe = GetComponentInParent<SpriteRenderer>();
 
     }
     private void OnTriggerEnter2D(Collider2D collision)
@@ -23,16 +23,16 @@ public class AISwap : MonoBehaviour
             Debug.Log("Kill");
             GetComponentInParent<Attack>().enabled = true;
             GetComponentInParent<Patrol>().enabled = false;
-            //LightFoe.flipX = true;
-            //flipped = true;
+            LightFoe.flipX = true;
+            flipped = true;
         }
         if (collision.gameObject.CompareTag("Player") && Right == false)
         {
             Debug.Log("Kill");
             GetComponentInParent<Attack>().enabled = true;
             GetComponentInParent<Patrol>().enabled = false;
-            //LightFoe.flipX = false;
-            //flipped = false;
+            LightFoe.flipX = false;
+            flipped = false;
         }
     }
     private void OnTriggerStay2D(Collider2D collision)
@@ -57,14 +57,14 @@ public class AISwap : MonoBehaviour
             Debug.Log("Partol");
             GetComponentInParent<Patrol>().enabled = true;
             GetComponentInParent<Attack>().enabled = false;
-            //LightFoe.flipX = false;
+            LightFoe.flipX = false;
         }
         if (collision.gameObject.CompareTag("Player") && Right == false)
         {
             Debug.Log("Partol");
             GetComponentInParent<Patrol>().enabled = true;
             GetComponentInParent<Attack>().enabled = false;
-            //LightFoe.flipX = true;
+            LightFoe.flipX = true;
         }
     }
 }
