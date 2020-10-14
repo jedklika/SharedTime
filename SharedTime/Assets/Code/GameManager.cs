@@ -20,8 +20,9 @@ public class GameManager : MonoBehaviour
 	// Update is called once per frame
 	void Update()
 	{
-
+		updateSprint();
 	}
+	
 	public bool CanSprint()
 	{
 		//Recover a bit if exhausted
@@ -40,6 +41,21 @@ public class GameManager : MonoBehaviour
 			return true;
 		}
 	}
+	
+	private void updateSprint(){
+		//ONLY INCREASE THIS WHEN NOT SPRINTING
+		if (!sprint && SprintTime < 30){
+			SprintTime += Time.deltaTime * 2.0f;
+			
+			if (SprintTime > 30)
+				SprintTime = 30;
+		}
+	}
+	
+	public void reduceSprint(){
+		SprintTime -= Time.deltaTime * 2;
+	}
+		
 	public void setDamage(float new_damage)
 	{
 		playerHealth -= new_damage;

@@ -13,6 +13,7 @@ TagManager:
   - key
   - Left
   - Right
+  - Crate
   layers:
   - Default
   - TransparentFX
@@ -23,8 +24,8 @@ TagManager:
   - 
   - 
   - Enemies
-  - 
-  - 
+  - Ground
+  - Boxes
   - 
   - 
   - 
