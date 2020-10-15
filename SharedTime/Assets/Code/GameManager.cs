@@ -11,15 +11,19 @@ public class GameManager : MonoBehaviour
 	public bool sprint;
 	private bool exhausted = false;
 	public float keys;
+	
+	UI_manager ui;
+	
 	// Start is called before the first frame update
 	void Start()
 	{
-
+		ui = FindObjectOfType<UI_manager>();
 	}
 
 	// Update is called once per frame
 	void Update()
 	{
+		ui.updateHPBar((float)playerHealth/(float)playerMaxHealth);
 		updateSprint();
 	}
 	
@@ -50,6 +54,8 @@ public class GameManager : MonoBehaviour
 			if (SprintTime > 30)
 				SprintTime = 30;
 		}
+		
+		ui.updateSprintBar((float)SprintTime/30.0f);
 	}
 	
 	public void reduceSprint(){
@@ -59,6 +65,5 @@ public class GameManager : MonoBehaviour
 	public void setDamage(float new_damage)
 	{
 		playerHealth -= new_damage;
-
 	}
 }

@@ -298,6 +298,8 @@ public class PlayerMovement : MonoBehaviour
 				jumpCharge = 1;
 			else
 				jumpCharge = 2;
+			
+			rb.gravityScale = 1.0f;
 		}
 		
         //Jumping
@@ -353,8 +355,7 @@ public class PlayerMovement : MonoBehaviour
 
         if (col.gameObject.CompareTag("Ground") && isJumping)
         {
-            isJumping = false;
-            rb.gravityScale = 1;
+            //isJumping = false;
             Debug.Log("Check");
             this.gameObject.transform.parent = null;
             if (isJumping == true)
@@ -362,6 +363,7 @@ public class PlayerMovement : MonoBehaviour
                 this.gameObject.transform.parent = null;
             }
         }
+		
         if (col.gameObject.CompareTag("Danger"))
         {
             gm.playerHealth -= 50;
