@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class UI_manager : MonoBehaviour
 {
@@ -8,11 +9,12 @@ public class UI_manager : MonoBehaviour
 	
 	public Transform hp_bar;
 	public Transform sprint_bar;
+	public Text InfoText;
 	
     // Start is called before the first frame update
     void Start()
     {
-        
+		InfoText.text = "";
     }
 
     // Update is called once per frame

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 using System;
 
 public class PlayerMovement : MonoBehaviour
@@ -21,14 +22,15 @@ public class PlayerMovement : MonoBehaviour
     public LayerMask whatIsEnemies;
     public float attackRange;
     public int damage;
-	
+	UI_manager UI;
     public bool Character2;
 	public bool characterEnabled = true;
     SpriteRenderer S;
-	
-    //public GameObject Gun;
-    //public bool holstered;
-    GameManager gm;
+	public float delay;
+
+	//public GameObject Gun;
+	//public bool holstered;
+	GameManager gm;
     void Start()
     {
         Character2 = false;
@@ -40,7 +42,10 @@ public class PlayerMovement : MonoBehaviour
         gm = FindObjectOfType<GameManager>();
         S = GetComponent<SpriteRenderer>();
         S.color = Color.blue;
-    }
+		UI = FindObjectOfType<UI_manager>();
+		Time.timeScale = 1;
+
+	}
     void Update()
     {
 		if (Input.GetKeyDown(KeyCode.X) && !isJumping)
@@ -73,8 +78,9 @@ public class PlayerMovement : MonoBehaviour
         }
         if (gm.playerHealth <= 0)
         {
-            SceneManager.LoadScene(0);
-        }
+			UI.InfoText.text = "Great now we are dead, hope you enjoy being stuck together for entirety";
+			Time.timeScale = 0;
+		}
     }
 	
 	void FixedUpdate(){
@@ -337,15 +343,17 @@ public class PlayerMovement : MonoBehaviour
         {
             gm.keys++;
             Destroy(col.gameObject);
-            Debug.Log(gm.keys);
-        }
+			StartCoroutine(Key());
+
+		}
 
 
         //Going through doors
         if (col.gameObject.CompareTag("Door") && gm.keys <= 0)
         {
-            Debug.Log("locked");
-        }
+			StartCoroutine(Locked());
+
+		}
 
         if (col.gameObject.CompareTag("Door") && gm.keys >= 1)
         {
@@ -368,11 +376,13 @@ public class PlayerMovement : MonoBehaviour
         {
             gm.playerHealth -= 50;
             Debug.Log(gm.playerHealth);
-        }
+			StartCoroutine(Danger());
+		}
 
         if (col.gameObject.CompareTag("End"))
         {
-            SceneManager.LoadScene(0);
+			UI.InfoText.text = "Time to blow this place";
+			Time.timeScale = 0;
         }
 
 
@@ -382,6 +392,44 @@ public class PlayerMovement : MonoBehaviour
             gm.playerHealth += 10;
             Destroy(col.gameObject);
             Debug.Log(gm.playerHealth);
-        }
+			StartCoroutine(Health());
+		}
     }
+	IEnumerator Locked()
+	{
+		UI.InfoText.text = "This is pointless, you land lover we are missing the key";
+		yield return new WaitForSeconds(delay);
+		UI.InfoText.text = "";
+	}
+	IEnumerator Key()
+	{
+		UI.InfoText.text = "Wonder where this goes";
+		yield return new WaitForSeconds(delay);
+		UI.InfoText.text = "";
+	}
+	IEnumerator Danger()
+	{
+		UI.InfoText.text = "Watch there lassy, too many of those encounters we be visitng Davy Jones";
+		yield return new WaitForSeconds(delay);
+		UI.InfoText.text = "Don't call me that you drunk";
+		yield return new WaitForSeconds(delay);
+		UI.InfoText.text = "Whatever, just be careful";
+		yield return new WaitForSeconds(delay);
+		UI.InfoText.text = "";
+	}
+	IEnumerator Health()
+	{
+		UI.InfoText.text = "Nothing like a bottle of rum";
+		yield return new WaitForSeconds(delay);
+		UI.InfoText.text = "You and your booze, do you ever stop chugging";
+		yield return new WaitForSeconds(delay);
+		UI.InfoText.text = "Like you don't do the same with whatever the hell you enjoy";
+		yield return new WaitForSeconds(delay);
+		UI.InfoText.text = "Fair Point";
+		yield return new WaitForSeconds(delay);
+		UI.InfoText.text = "";
+
+
+	}
+
 }
