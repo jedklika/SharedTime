@@ -12,6 +12,9 @@ public class GameManager : MonoBehaviour
 	private bool exhausted = false;
 	public float keys;
 	
+	public GameObject hitbox_base;
+	public GameObject hitbox_leaf;
+	
 	UI_manager ui;
 	
 	// Start is called before the first frame update
@@ -65,5 +68,20 @@ public class GameManager : MonoBehaviour
 	public void setDamage(float new_damage)
 	{
 		playerHealth -= new_damage;
+	}
+	
+	
+	///SYSTEM FOR CREATING HITBOXES
+	//THE SPRITE OF A HITBOX IS MANAGED BY PLAYER OR ENEMIES
+	
+	//HITBOX ITSELF
+	public IEnumerator createHitbox(Vector2 user_position, GameObject prefab, Vector2 position, float rotation, float delay_before_creating){
+		yield return new WaitForSeconds(delay_before_creating);
+		//CREATE AN EMPTY HITBOX PREFAB (SO IF ANY OF THE HITBOXES TOUCH AN ENEMY, THE MAIN HIT,BOX SCRIPT IS FIRED)
+		GameObject hitbox_prefab = Instantiate(prefab, user_position, new Quaternion(0,0,rotation, 1));
+
+		hitbox_prefab.transform.Translate(position);
+		
+		//Destroy(hitbox, delay_before_killing);
 	}
 }

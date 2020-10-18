@@ -141,6 +141,7 @@ public class PlayerMovement : MonoBehaviour
 		}
 	}
 
+	//CHARACTER ONE ATTACK AND UPDATES
 	void updateCharacterOne(){
 		//Sprinting
         if (Input.GetKeyDown(KeyCode.LeftShift) && gm.SprintTime > 0 || Input.GetKeyDown(KeyCode.RightShift) && gm.SprintTime > 0)
@@ -156,8 +157,11 @@ public class PlayerMovement : MonoBehaviour
 
 
         //Using weapon
+		//SHOOTING STANCE
         if (Input.GetKeyDown(KeyCode.F) && timeBtwAttack <= 0)
         {
+			doCharacterOneShootingStance();
+			/*
             Collider2D[] enemiesToDamage = Physics2D.OverlapCircleAll(attackPos.position, attackRange, whatIsEnemies);
             for (int i = 0; i < enemiesToDamage.Length; i++)
             {
@@ -165,14 +169,31 @@ public class PlayerMovement : MonoBehaviour
                 enemiesToDamage[i].GetComponent<Patrol>().health -= damage;
 
             }
+			*/
             timeBtwAttack = startTimeBtwAttack;
-        }
+		//LOBBING GRENADE
+        } else if (Input.GetKeyDown(KeyCode.G) && timeBtwAttack <= 0) {
+			doCharacterOneGrenadeThrow();
+		}
         else
         {
             timeBtwAttack -= Time.deltaTime;
         }
 	}
 	
+	//SHOOTING STANCE
+	void doCharacterOneShootingStance(){
+		//RESET CHARACTER'S MOMENTUM
+		rb.velocity = new Vector2(0,rb.velocity.y);
+	}
+	
+	//LOBBING GRENADE
+	void doCharacterOneGrenadeThrow(){
+		//RESET CHARACTER'S MOMENTUM
+		rb.velocity = new Vector2(0,rb.velocity.y);
+	}
+	
+	//CHARACTER TWO ATTACK AND UPDATES
 	void updateCharacterTwo(){
 		//Sprinting
         if (Input.GetKeyDown(KeyCode.LeftShift) && gm.SprintTime > 0 || Input.GetKeyDown(KeyCode.RightShift) && gm.SprintTime > 0)
@@ -188,8 +209,12 @@ public class PlayerMovement : MonoBehaviour
 
 
         //Using weapon
+		//MELEE STRIKE
         if (Input.GetKeyDown(KeyCode.F) && timeBtwAttack <= 0)
         {
+			doCharacterTwoMeleeSwipe();
+			
+			/*
             Collider2D[] enemiesToDamage = Physics2D.OverlapCircleAll(attackPos.position, attackRange, whatIsEnemies);
             for (int i = 0; i < enemiesToDamage.Length; i++)
             {
@@ -198,6 +223,7 @@ public class PlayerMovement : MonoBehaviour
 
             }
             timeBtwAttack = startTimeBtwAttack;
+			*/
         }
         else
         {
@@ -205,6 +231,16 @@ public class PlayerMovement : MonoBehaviour
         }
 	}
 	
+	void doCharacterTwoMeleeSwipe(){
+		//RESET CHARACTER'S MOMENTUM
+		rb.velocity = new Vector2(0,rb.velocity.y);
+		//WIND UP ANIMATION AND VELOCITY
+		
+		//DO ATTACK
+		
+	}
+	
+	//
 	private bool checkPush(){
 		//RAYCAST IN CURRENT DIRECTION
 		RaycastHit2D pushHit1, pushHit2;
@@ -329,7 +365,7 @@ public class PlayerMovement : MonoBehaviour
 	}
 	//
 	//
-
+	
     void OnCollisionEnter2D(Collision2D col)
     {
         //Acquiring keys
@@ -384,4 +420,10 @@ public class PlayerMovement : MonoBehaviour
             Debug.Log(gm.playerHealth);
         }
     }
+	
+	private IEnumerator disableTemp(float seconds){
+		characterEnabled = false;
+		yield return new WaitForSeconds(seconds);
+		characterEnabled = true;
+	}
 }
