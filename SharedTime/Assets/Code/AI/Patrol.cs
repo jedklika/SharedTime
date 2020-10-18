@@ -12,6 +12,8 @@ public class Patrol : MonoBehaviour
     public int health;
     Rigidbody2D Rb;
     int waypointIndex = 0;
+	
+	public int enemyID;
 
     // Start is called before the first frame update
     void Start()
@@ -37,6 +39,7 @@ public class Patrol : MonoBehaviour
             gameObject.SetActive(false);
         }
     }
+	
     void OnTriggerEnter2D(Collider2D collision)
     {
         //Debug.Log("Hitting trigger of tag name " + collision.gameObject.tag);
@@ -53,8 +56,9 @@ public class Patrol : MonoBehaviour
             FoeFlipped = false;
         }
     }
-        public void TakeDamage(int damage)
-    {
+   
+   public void TakeDamage(int damage)
+   {
         health -= damage;
 
         //Check if dead
@@ -62,5 +66,5 @@ public class Patrol : MonoBehaviour
         {
             GameObject.Destroy(this.gameObject);
         }
-    }
+   }
 }

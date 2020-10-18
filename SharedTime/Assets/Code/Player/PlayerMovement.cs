@@ -28,6 +28,16 @@ public class PlayerMovement : MonoBehaviour
     SpriteRenderer S;
 	public float delay;
 
+	public GameObject right_slash_1;
+	public GameObject right_slash_2;
+	public GameObject right_slash_3;
+	
+	public GameObject left_slash_1;
+	public GameObject left_slash_2;
+	public GameObject left_slash_3;
+	
+	private int melee_sequence = 0;
+	
 	//public GameObject Gun;
 	//public bool holstered;
 	GameManager gm;
@@ -64,9 +74,9 @@ public class PlayerMovement : MonoBehaviour
 		
 		if (characterEnabled){
 			if (Character2)
-				updateCharacterOne();
-			else
 				updateCharacterTwo();
+			else
+				updateCharacterOne();
 		}
 		
 		updateJumping();
@@ -243,7 +253,41 @@ public class PlayerMovement : MonoBehaviour
 		//WIND UP ANIMATION AND VELOCITY
 		
 		//DO ATTACK
-		
+		if (isFlipped){
+			if (melee_sequence == 0){
+				StartCoroutine(gm.createAttack(rb.position, left_slash_1, new Vector2(-0.6f, 0.2f), 0.0f, 0.16f, 0.16f));
+				StartCoroutine(speedTemp(0.1f,-2.0f));
+				StartCoroutine(disableTemp(0.18f));
+				melee_sequence++;
+			} else if (melee_sequence == 1){
+				StartCoroutine(gm.createAttack(rb.position, left_slash_2, new Vector2(-0.6f, 0.2f), 0.0f, 0.16f, 0.16f));
+				StartCoroutine(speedTemp(0.1f,-2.0f));
+				StartCoroutine(disableTemp(0.18f));
+				melee_sequence++;
+			} else {
+				StartCoroutine(gm.createAttack(rb.position, left_slash_3, new Vector2(-1.3f, 0.2f), 0.0f, 0.16f, 0.16f));
+				StartCoroutine(speedTemp(0.2f,-4.0f));
+				StartCoroutine(disableTemp(0.18f));
+				melee_sequence = 0;
+			}
+		} else {
+			if (melee_sequence == 0){
+				StartCoroutine(gm.createAttack(rb.position, right_slash_1, new Vector2(0.6f, 0.2f), 0.0f, 0.16f, 0.16f));
+				StartCoroutine(speedTemp(0.1f,2.0f));
+				StartCoroutine(disableTemp(0.18f));
+				melee_sequence++;
+			} else if (melee_sequence == 1){
+				StartCoroutine(gm.createAttack(rb.position, right_slash_2, new Vector2(0.6f, 0.2f), 0.0f, 0.16f, 0.16f));
+				StartCoroutine(speedTemp(0.1f,2.0f));
+				StartCoroutine(disableTemp(0.18f));
+				melee_sequence++;
+			} else {
+				StartCoroutine(gm.createAttack(rb.position, right_slash_3, new Vector2(1.3f, 0.2f), 0.0f, 0.16f, 0.16f));
+				StartCoroutine(speedTemp(0.2f,4.0f));
+				StartCoroutine(disableTemp(0.18f));
+				melee_sequence = 0;
+			}
+		}
 	}
 	
 	//
@@ -473,5 +517,11 @@ public class PlayerMovement : MonoBehaviour
 		characterEnabled = false;
 		yield return new WaitForSeconds(seconds);
 		characterEnabled = true;
+	}
+	
+	private IEnumerator speedTemp(float seconds, float speed){
+		rb.velocity = new Vector2(speed,rb.velocity.y);
+		yield return new WaitForSeconds(seconds);
+		rb.velocity = new Vector2(0,rb.velocity.y);
 	}
 }
