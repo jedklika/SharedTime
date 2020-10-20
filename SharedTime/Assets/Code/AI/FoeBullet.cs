@@ -27,6 +27,7 @@ public class FoeBullet : MonoBehaviour
             DestroyProjectile();
         }
     }
+	
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.CompareTag("Player"))
@@ -36,6 +37,7 @@ public class FoeBullet : MonoBehaviour
             Debug.Log(Gm.playerHealth);
         }
     }
+	
     void DestroyProjectile()
     {
         Destroy(gameObject);

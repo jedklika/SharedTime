@@ -28,6 +28,15 @@ public class PlayerMovement : MonoBehaviour
     SpriteRenderer S;
 	public float delay;
 
+	public bool characterShooting = false;
+	int ammo;
+	public int max_ammo;
+	public GameObject bulletPrefab;
+	
+	int c4;
+	public int max_c4;
+	public GameObject c4Prefab;
+	
 	public GameObject right_slash_1;
 	public GameObject right_slash_2;
 	public GameObject right_slash_3;
@@ -58,7 +67,7 @@ public class PlayerMovement : MonoBehaviour
 	}
     void Update()
     {
-		if (Input.GetKeyDown(KeyCode.X) && !isJumping)
+		if (Input.GetKeyDown(KeyCode.X) && !isJumping && !characterShooting)
 			StartCoroutine(updateCharacterSwitch());
 		
 		/*
@@ -71,7 +80,6 @@ public class PlayerMovement : MonoBehaviour
             jumpHeight = 10;
         }
 		*/
-		
 		if (characterEnabled){
 			if (Character2)
 				updateCharacterTwo();
@@ -174,39 +182,91 @@ public class PlayerMovement : MonoBehaviour
 
         //Using weapon
 		//SHOOTING STANCE
-        if (Input.GetKeyDown(KeyCode.F) && timeBtwAttack <= 0)
-        {
-			doCharacterOneShootingStance();
-			/*
-            Collider2D[] enemiesToDamage = Physics2D.OverlapCircleAll(attackPos.position, attackRange, whatIsEnemies);
-            for (int i = 0; i < enemiesToDamage.Length; i++)
-            {
-                Debug.Log("Enemy damage" + enemiesToDamage[i]);
-                enemiesToDamage[i].GetComponent<Patrol>().health -= damage;
+		if (characterShooting){
+			if (Input.GetMouseButtonDown(0) && timeBtwAttack <= 0)
+				doCharacterOneShooting();
+			
+			if (Input.GetKeyDown(KeyCode.F) && timeBtwAttack <= 0)
+			{
+				characterShooting = false;
+				
+				timeBtwAttack = startTimeBtwAttack;
+			//LOBBING GRENADE
+			} else if (Input.GetKeyDown(KeyCode.G) && timeBtwAttack <= 0) {
+				characterShooting = false;
+				
+				doCharacterOneGrenadeThrow();
+			}
+			else
+			{
+				timeBtwAttack -= Time.deltaTime;
+			}
+			
+			
+		//NON SHOOTING STANCE
+		} else {
+			if (Input.GetKeyDown(KeyCode.F) && timeBtwAttack <= 0)
+			{
+				characterShooting = true;
+				/*
+				Collider2D[] enemiesToDamage = Physics2D.OverlapCircleAll(attackPos.position, attackRange, whatIsEnemies);
+				for (int i = 0; i < enemiesToDamage.Length; i++)
+				{
+					Debug.Log("Enemy damage" + enemiesToDamage[i]);
+					enemiesToDamage[i].GetComponent<Patrol>().health -= damage;
 
-            }
-			*/
-            timeBtwAttack = startTimeBtwAttack;
-		//LOBBING GRENADE
-        } else if (Input.GetKeyDown(KeyCode.G) && timeBtwAttack <= 0) {
-			doCharacterOneGrenadeThrow();
+				}
+				*/
+				timeBtwAttack = startTimeBtwAttack;
+			//LOBBING GRENADE
+			} else if (Input.GetKeyDown(KeyCode.G) && timeBtwAttack <= 0) {
+				doCharacterOneGrenadeThrow();
+			}
+			else
+			{
+				timeBtwAttack -= Time.deltaTime;
+			}
 		}
-        else
-        {
-            timeBtwAttack -= Time.deltaTime;
-        }
 	}
 	
 	//SHOOTING STANCE
-	void doCharacterOneShootingStance(){
-		//RESET CHARACTER'S MOMENTUM
-		rb.velocity = new Vector2(0,rb.velocity.y);
+	void doCharacterOneShooting(){
+		//GET MOUSE POSITION
+		Vector3 mouse = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+		Vector2 target_position = new Vector2(mouse.x, mouse.y);
+		
+		Debug.Log(target_position);
+		
+		if (isFlipped){
+			StartCoroutine(gm.createMovingAttack(rb.position, bulletPrefab, new Vector2(-0.6f, 0.1f), 0.0f, target_position, 0.05f, 1.1f));
+			rb.AddForce(Vector2.right * 7.0f, ForceMode2D.Impulse);
+			disableTemp(0.12f);
+		} else {
+			StartCoroutine(gm.createMovingAttack(rb.position, bulletPrefab, new Vector2(0.6f, 0.1f), 0.0f, target_position, 0.05f, 1.1f));
+			rb.AddForce(Vector2.left * 7.0f, ForceMode2D.Impulse);
+			disableTemp(0.12f);
+		}
+		
+		timeBtwAttack = startTimeBtwAttack;
 	}
 	
 	//LOBBING GRENADE
 	void doCharacterOneGrenadeThrow(){
 		//RESET CHARACTER'S MOMENTUM
 		rb.velocity = new Vector2(0,rb.velocity.y);
+		
+		//THROW GRENADE BASED ON FLIP
+		if (isFlipped){
+			//StartCoroutine(gm.createMovingAttack(rb.position, bulletPrefab, new Vector2(-0.6f, 0.1f), 0.0f, target_position, 0.05f, 1.1f));
+			rb.AddForce(Vector2.right * 7.0f, ForceMode2D.Impulse);
+			disableTemp(0.12f);
+		} else {
+			//StartCoroutine(gm.createMovingAttack(rb.position, bulletPrefab, new Vector2(0.6f, 0.1f), 0.0f, target_position, 0.05f, 1.1f));
+			rb.AddForce(Vector2.left * 7.0f, ForceMode2D.Impulse);
+			disableTemp(0.12f);
+		}
+		
+		timeBtwAttack = startTimeBtwAttack;
 	}
 	
 	//CHARACTER TWO ATTACK AND UPDATES
@@ -255,37 +315,39 @@ public class PlayerMovement : MonoBehaviour
 		//DO ATTACK
 		if (isFlipped){
 			if (melee_sequence == 0){
-				StartCoroutine(gm.createAttack(rb.position, left_slash_1, new Vector2(-0.6f, 0.2f), 0.0f, 0.16f, 0.16f));
-				StartCoroutine(speedTemp(0.1f,-2.0f));
+				StartCoroutine(gm.createAttack(rb.position, left_slash_1, new Vector2(-0.6f, 0.2f), 0.0f, 0.11f, 0.16f));
+				rb.AddForce(Vector2.left * 2.0f, ForceMode2D.Impulse);
 				StartCoroutine(disableTemp(0.18f));
 				melee_sequence++;
 			} else if (melee_sequence == 1){
-				StartCoroutine(gm.createAttack(rb.position, left_slash_2, new Vector2(-0.6f, 0.2f), 0.0f, 0.16f, 0.16f));
-				StartCoroutine(speedTemp(0.1f,-2.0f));
+				StartCoroutine(gm.createAttack(rb.position, left_slash_2, new Vector2(-0.6f, 0.2f), 0.0f, 0.11f, 0.16f));
+				rb.AddForce(Vector2.left * 2.0f, ForceMode2D.Impulse);
 				StartCoroutine(disableTemp(0.18f));
 				melee_sequence++;
 			} else {
-				StartCoroutine(gm.createAttack(rb.position, left_slash_3, new Vector2(-1.3f, 0.2f), 0.0f, 0.16f, 0.16f));
-				StartCoroutine(speedTemp(0.2f,-4.0f));
+				StartCoroutine(gm.createAttack(rb.position, left_slash_3, new Vector2(-1.3f, 0.2f), 0.0f, 0.11f, 0.16f));
+				rb.AddForce(Vector2.left * 4.0f, ForceMode2D.Impulse);
 				StartCoroutine(disableTemp(0.18f));
 				melee_sequence = 0;
+				timeBtwAttack = startTimeBtwAttack;
 			}
 		} else {
 			if (melee_sequence == 0){
-				StartCoroutine(gm.createAttack(rb.position, right_slash_1, new Vector2(0.6f, 0.2f), 0.0f, 0.16f, 0.16f));
-				StartCoroutine(speedTemp(0.1f,2.0f));
+				StartCoroutine(gm.createAttack(rb.position, right_slash_1, new Vector2(0.6f, 0.2f), 0.0f, 0.11f, 0.16f));
+				rb.AddForce(Vector2.right * 2.0f, ForceMode2D.Impulse);
 				StartCoroutine(disableTemp(0.18f));
 				melee_sequence++;
 			} else if (melee_sequence == 1){
-				StartCoroutine(gm.createAttack(rb.position, right_slash_2, new Vector2(0.6f, 0.2f), 0.0f, 0.16f, 0.16f));
-				StartCoroutine(speedTemp(0.1f,2.0f));
+				StartCoroutine(gm.createAttack(rb.position, right_slash_2, new Vector2(0.6f, 0.2f), 0.0f, 0.11f, 0.16f));
+				rb.AddForce(Vector2.right * 2.0f, ForceMode2D.Impulse);
 				StartCoroutine(disableTemp(0.18f));
 				melee_sequence++;
 			} else {
-				StartCoroutine(gm.createAttack(rb.position, right_slash_3, new Vector2(1.3f, 0.2f), 0.0f, 0.16f, 0.16f));
-				StartCoroutine(speedTemp(0.2f,4.0f));
+				StartCoroutine(gm.createAttack(rb.position, right_slash_3, new Vector2(1.3f, 0.2f), 0.0f, 0.11f, 0.16f));
+				rb.AddForce(Vector2.right * 4.0f, ForceMode2D.Impulse);
 				StartCoroutine(disableTemp(0.18f));
 				melee_sequence = 0;
+				timeBtwAttack = startTimeBtwAttack;
 			}
 		}
 	}
@@ -371,7 +433,7 @@ public class PlayerMovement : MonoBehaviour
             this.gameObject.transform.parent = null;
 
 			//Short jump
-            if (!Input.GetKey(KeyCode.Space) && rb.velocity.y > 2)
+            if (!Input.GetKey(KeyCode.Space) && rb.velocity.y > 2 && jumpCharge == 0)
             {
                 rb.gravityScale = 2.7f;
             }
@@ -444,7 +506,7 @@ public class PlayerMovement : MonoBehaviour
         if (col.gameObject.CompareTag("Ground") && isJumping)
         {
             //isJumping = false;
-            Debug.Log("Check");
+            //Debug.Log("Check");
             this.gameObject.transform.parent = null;
             if (isJumping == true)
             {
@@ -455,7 +517,7 @@ public class PlayerMovement : MonoBehaviour
         if (col.gameObject.CompareTag("Danger"))
         {
             gm.playerHealth -= 50;
-            Debug.Log(gm.playerHealth);
+            //Debug.Log(gm.playerHealth);
 			StartCoroutine(Danger());
 		}
 
@@ -471,7 +533,7 @@ public class PlayerMovement : MonoBehaviour
         {
             gm.playerHealth += 10;
             Destroy(col.gameObject);
-            Debug.Log(gm.playerHealth);
+            //Debug.Log(gm.playerHealth);
 			StartCoroutine(Health());
 		}
     }

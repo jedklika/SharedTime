@@ -26,12 +26,21 @@ public class CamFollow : MonoBehaviour
 		//IN CASE OF JUMPING/FALLING
 		previousOffset = Vector3.Lerp(previousOffset, nextOffset, smoothSpeed);
 		
-		if (characterBody.velocity.y < 0)
-			nextOffset = new Vector3(offset.x + characterBody.velocity.x/8, offset.y + characterBody.velocity.y/2, offset.z);
+		float new_x, new_y;
+		
+		if (characterBody.velocity.x < 7.1f && characterBody.velocity.x > 7.1f)
+			new_x = offset.x + characterBody.velocity.x/12;
 		else
-			nextOffset = new Vector3(offset.x + characterBody.velocity.x/8, offset.y + characterBody.velocity.y/6, offset.z);
+			new_x = offset.x + characterBody.velocity.x/4;
+		
+		if (characterBody.velocity.y < 0.6f && characterBody.velocity.y > 1.3f)
+			new_y = offset.y + characterBody.velocity.y/10;
+		else
+			new_y = offset.y + characterBody.velocity.y/4;
+		
+		nextOffset = new Vector3(new_x, new_y, offset.z);
 		
 		//SMOOTH IT OUT
-		finalOffset = Vector3.Lerp(previousOffset, offset, smoothSpeed);
+		finalOffset = Vector3.Lerp(previousOffset, offset, smoothSpeed*2);
     }
 }

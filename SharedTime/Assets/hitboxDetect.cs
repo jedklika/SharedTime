@@ -20,7 +20,7 @@ public class hitboxDetect : MonoBehaviour
     }
 	
 	void OnTriggerEnter2D(Collider2D col){
-		Debug.Log(col.tag);
+		//Debug.Log(col.tag);
 		
 		if (col.CompareTag("Enemy")){
 			//GET THE PATROL SCRIPT

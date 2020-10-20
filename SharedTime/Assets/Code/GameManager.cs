@@ -72,6 +72,21 @@ public class GameManager : MonoBehaviour
 	//THE SPRITE OF A HITBOX IS MANAGED BY PLAYER OR ENEMIES
 	
 	//HITBOX ITSELF
+	//WITH MOVEMENT
+	public IEnumerator createMovingAttack(Vector2 user_position, GameObject prefab, Vector2 position, float rotation, Vector2 target, float delay_before_creating, float delay_before_killing){
+		yield return new WaitForSeconds(delay_before_creating);
+		//CREATE AN EMPTY HITBOX PREFAB (SO IF ANY OF THE HITBOXES TOUCH AN ENEMY, THE MAIN HIT,BOX SCRIPT IS FIRED)
+		GameObject hitbox_prefab = Instantiate(prefab, user_position, new Quaternion(0,0,rotation, 1));
+
+		hitbox_prefab.transform.Translate(position);
+		
+		//GET HITBOX SCRIPT AND CHANGE TARGET
+		hitbox_prefab.GetComponent<hitboxBase>().setTarget(target);
+		
+		Destroy(hitbox_prefab, delay_before_killing);
+	}
+	
+	//WITH OUT SPEED
 	public IEnumerator createAttack(Vector2 user_position, GameObject prefab, Vector2 position, float rotation, float delay_before_creating, float delay_before_killing){
 		yield return new WaitForSeconds(delay_before_creating);
 		//CREATE AN EMPTY HITBOX PREFAB (SO IF ANY OF THE HITBOXES TOUCH AN ENEMY, THE MAIN HIT,BOX SCRIPT IS FIRED)
