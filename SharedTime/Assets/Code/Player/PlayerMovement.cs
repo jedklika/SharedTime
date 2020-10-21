@@ -33,10 +33,12 @@ public class PlayerMovement : MonoBehaviour
 	public int max_ammo;
 	public GameObject bulletPrefab;
 	
-	int c4;
-	public int max_c4;
-	public GameObject c4Prefab;
-	public List<GameObject> currentc4s;
+	public int c4_ammo;
+	public int max_c4_ammo;
+	public GameObject c4PrefabLeft;
+	public GameObject c4PrefabRight;
+	public GameObject[] currentc4s;
+	public int c4_count = 0;
 	public int max_c4_on_field;					//for all c4s currently set up
 	
 	public GameObject right_slash_1;
@@ -67,6 +69,7 @@ public class PlayerMovement : MonoBehaviour
 		UI = FindObjectOfType<UI_manager>();
 		Time.timeScale = 1;
 		ammo = max_ammo;
+		c4_ammo = max_c4_ammo;
 
 	}
 	
@@ -142,6 +145,14 @@ public class PlayerMovement : MonoBehaviour
         {
             rb.velocity = new Vector3(0f, rb.velocity.y, 0f);
         }
+		
+		
+		//UPDATING C4 COUNT
+		
+		//UPDATE ALL C4S IN GAME AND ADD TO CURRENT C4S
+		currentc4s = GameObject.FindGameObjectsWithTag("C4");
+		
+		c4_count = currentc4s.Length;
 	}
 	
 	//CONTROLS AND UPDATE FUNCTIONS
@@ -188,9 +199,8 @@ public class PlayerMovement : MonoBehaviour
         //Using weapon
 		//SHOOTING STANCE
 		if (characterShooting){
-			if (Input.GetMouseButtonDown(0) && timeBtwAttack <= 0 && ammo > 0){
+			if (Input.GetMouseButtonDown(0) && timeBtwAttack <= 0){
 				doCharacterOneShooting();
-				ammo-=1;
 			}
 			
 			if (Input.GetKeyDown(KeyCode.F) && timeBtwAttack <= 0)
@@ -203,6 +213,8 @@ public class PlayerMovement : MonoBehaviour
 				characterShooting = false;
 				
 				doCharacterOneC4();
+			} else if (Input.GetKeyDown(KeyCode.H) && timeBtwAttack <= 0) {
+				doCharacterOneActivateC4();
 			}
 			else
 			{
@@ -228,6 +240,8 @@ public class PlayerMovement : MonoBehaviour
 			//LOBBING GRENADE
 			} else if (Input.GetKeyDown(KeyCode.G) && timeBtwAttack <= 0) {
 				doCharacterOneC4();
+			} else if (Input.GetKeyDown(KeyCode.H) && timeBtwAttack <= 0) {
+				doCharacterOneActivateC4();
 			}
 			else
 			{
@@ -238,49 +252,58 @@ public class PlayerMovement : MonoBehaviour
 	
 	//SHOOTING STANCE
 	void doCharacterOneShooting(){
-		//GET MOUSE POSITION
-		Vector3 mouse = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-		Vector2 target_position = new Vector2(mouse.x, mouse.y);
-		
-		Debug.Log(target_position);
-		
-		if (isFlipped){
-			StartCoroutine(gm.createMovingAttack(rb.position, bulletPrefab, new Vector2(-0.6f, 0.1f), 0.0f, target_position, 0.05f, 1.1f));
-			rb.AddForce(Vector2.right * 7.0f, ForceMode2D.Impulse);
-			disableTemp(0.12f);
-		} else {
-			StartCoroutine(gm.createMovingAttack(rb.position, bulletPrefab, new Vector2(0.6f, 0.1f), 0.0f, target_position, 0.05f, 1.1f));
-			rb.AddForce(Vector2.left * 7.0f, ForceMode2D.Impulse);
-			disableTemp(0.12f);
+		//REQUIREMENTS
+		if (ammo > 0){
+			//GET MOUSE POSITION
+			Vector3 mouse = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+			Vector2 target_position = new Vector2(mouse.x, mouse.y);
+			
+			Debug.Log(target_position);
+			
+			if (isFlipped){
+				StartCoroutine(gm.createMovingAttack(rb.position, bulletPrefab, new Vector2(-0.6f, 0.1f), 0.0f, target_position, 0.05f, 1.1f));
+				rb.AddForce(Vector2.right * 7.0f, ForceMode2D.Impulse);
+				disableTemp(0.12f);
+			} else {
+				StartCoroutine(gm.createMovingAttack(rb.position, bulletPrefab, new Vector2(0.6f, 0.1f), 0.0f, target_position, 0.05f, 1.1f));
+				rb.AddForce(Vector2.left * 7.0f, ForceMode2D.Impulse);
+				disableTemp(0.12f);
+			}
+			
+			ammo-=1;
+			
+			timeBtwAttack = startTimeBtwAttack;
 		}
-		
-		timeBtwAttack = startTimeBtwAttack;
 	}
 	
 	//LOBBING C4
 	void doCharacterOneC4(){
-		//RESET CHARACTER'S MOMENTUM
-		rb.velocity = new Vector2(0,rb.velocity.y);
-		
-		//THROW A C4 BASED ON FLIP
-		if (isFlipped){
-			StartCoroutine(gm.createTrapAttack(rb.position, c4Prefab, new Vector2(-0.6f, 0.1f), 0.0f, 0.05f));
-			disableTemp(0.08f);
-		} else {
-			StartCoroutine(gm.createTrapAttack(rb.position, c4Prefab, new Vector2(0.6f, 0.1f), 0.0f, 0.05f));
-			rb.AddForce(Vector2.left * 7.0f, ForceMode2D.Impulse);
-			disableTemp(0.08f);
+		//CHECK REQUIREMENTS
+		if (c4_ammo > 0 && c4_count < max_c4_on_field){
+			//RESET CHARACTER'S MOMENTUM
+			rb.velocity = new Vector2(0,rb.velocity.y);
+			
+			//THROW A C4 BASED ON FLIP
+			if (isFlipped){
+				StartCoroutine(gm.createTrapAttack(rb.position, c4PrefabLeft, new Vector2(-0.6f, 0.1f), 0.0f, 0.05f));
+				disableTemp(0.08f);
+			} else {
+				StartCoroutine(gm.createTrapAttack(rb.position, c4PrefabRight, new Vector2(0.6f, 0.1f), 0.0f, 0.05f));
+				rb.AddForce(Vector2.left * 7.0f, ForceMode2D.Impulse);
+				disableTemp(0.08f);
+			}
+			
+			c4_ammo-=1;
+			
+			timeBtwAttack = startTimeBtwAttack;
 		}
-		
-		//UPDATE ALL C4S IN GAME AND ADD TO CURRENT C4S
-		
-		
-		timeBtwAttack = startTimeBtwAttack;
 	}
 	
 	void doCharacterOneActivateC4(){
 		//BLOW UP THE NEXT AVAILABLE C4 IF ANY
-		
+		if (c4_count > 0){
+			currentc4s[0].transform.GetChild(0).gameObject.GetComponent<trapDetect>().activateTrap();
+		}
 	}
 	
 	//CHARACTER TWO ATTACK AND UPDATES
@@ -386,7 +409,7 @@ public class PlayerMovement : MonoBehaviour
 			if (pushHit1){
 				Debug.Log(pushHit1.distance);
 				
-				if (pushHit1.distance < 0.6f){
+				if (pushHit1.distance < 0.5f){
 					if (pushHit1.collider.CompareTag("Ground")){
 						return false;
 					} else {
@@ -398,7 +421,7 @@ public class PlayerMovement : MonoBehaviour
 			if (pushHit2){
 				//Debug.Log(pushHit.distance);
 				
-				if (pushHit2.distance < 0.6f){
+				if (pushHit2.distance < 0.5f){
 					if (pushHit2.collider.CompareTag("Ground")){
 						return false;
 					} else {
@@ -415,7 +438,7 @@ public class PlayerMovement : MonoBehaviour
 			if (pushHit1){
 				Debug.Log(pushHit1.distance);
 				
-				if (pushHit1.distance < 0.6f){
+				if (pushHit1.distance < 0.5f){
 					if (pushHit1.collider.CompareTag("Ground")){
 						return false;
 					} else {
@@ -427,7 +450,7 @@ public class PlayerMovement : MonoBehaviour
 			if (pushHit2){
 				//Debug.Log(pushHit.distance);
 				
-				if (pushHit2.distance < 0.6f){
+				if (pushHit2.distance < 0.5f){
 					if (pushHit2.collider.CompareTag("Ground")){
 						return false;
 					} else {

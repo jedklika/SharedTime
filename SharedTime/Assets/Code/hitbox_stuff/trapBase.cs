@@ -4,15 +4,23 @@ using UnityEngine;
 
 public class trapBase : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    public GameObject trapTrigger;
+	public bool trapActivated = false;
 
+	void Start()
+	{
+		
+	}
+	
     // Update is called once per frame
     void Update()
     {
-        
+
     }
+	
+	public IEnumerator delayDelete(float delay){
+		yield return new WaitForSeconds(delay);
+		
+		Destroy(gameObject);
+	}
 }
