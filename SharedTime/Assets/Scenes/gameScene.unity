@@ -476,6 +476,9 @@ MonoBehaviour:
   bulletPrefab: {fileID: 2330587306574411890, guid: 90aed95ca3ef4ae45897bb0c9211aa17,
     type: 3}
   max_c4: 0
+  c4Prefab: {fileID: 0}
+  currentc4s: []
+  max_c4_on_field: 0
   right_slash_1: {fileID: 2263676050415063610, guid: 77a62334c9767cd48a951405d67203b0,
     type: 3}
   right_slash_2: {fileID: 526584897984978944, guid: 490b7c28e8b559c4cb59de94d37d688c,

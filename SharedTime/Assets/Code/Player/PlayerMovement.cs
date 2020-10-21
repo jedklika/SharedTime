@@ -36,6 +36,8 @@ public class PlayerMovement : MonoBehaviour
 	int c4;
 	public int max_c4;
 	public GameObject c4Prefab;
+	public List<GameObject> currentc4s;
+	public int max_c4_on_field;					//for all c4s currently set up
 	
 	public GameObject right_slash_1;
 	public GameObject right_slash_2;
@@ -50,6 +52,7 @@ public class PlayerMovement : MonoBehaviour
 	//public GameObject Gun;
 	//public bool holstered;
 	GameManager gm;
+	
     void Start()
     {
         Character2 = false;
@@ -63,8 +66,10 @@ public class PlayerMovement : MonoBehaviour
         S.color = Color.blue;
 		UI = FindObjectOfType<UI_manager>();
 		Time.timeScale = 1;
+		ammo = max_ammo;
 
 	}
+	
     void Update()
     {
 		if (Input.GetKeyDown(KeyCode.X) && !isJumping && !characterShooting)
@@ -183,8 +188,10 @@ public class PlayerMovement : MonoBehaviour
         //Using weapon
 		//SHOOTING STANCE
 		if (characterShooting){
-			if (Input.GetMouseButtonDown(0) && timeBtwAttack <= 0)
+			if (Input.GetMouseButtonDown(0) && timeBtwAttack <= 0 && ammo > 0){
 				doCharacterOneShooting();
+				ammo-=1;
+			}
 			
 			if (Input.GetKeyDown(KeyCode.F) && timeBtwAttack <= 0)
 			{
@@ -195,7 +202,7 @@ public class PlayerMovement : MonoBehaviour
 			} else if (Input.GetKeyDown(KeyCode.G) && timeBtwAttack <= 0) {
 				characterShooting = false;
 				
-				doCharacterOneGrenadeThrow();
+				doCharacterOneC4();
 			}
 			else
 			{
@@ -220,7 +227,7 @@ public class PlayerMovement : MonoBehaviour
 				timeBtwAttack = startTimeBtwAttack;
 			//LOBBING GRENADE
 			} else if (Input.GetKeyDown(KeyCode.G) && timeBtwAttack <= 0) {
-				doCharacterOneGrenadeThrow();
+				doCharacterOneC4();
 			}
 			else
 			{
@@ -250,23 +257,30 @@ public class PlayerMovement : MonoBehaviour
 		timeBtwAttack = startTimeBtwAttack;
 	}
 	
-	//LOBBING GRENADE
-	void doCharacterOneGrenadeThrow(){
+	//LOBBING C4
+	void doCharacterOneC4(){
 		//RESET CHARACTER'S MOMENTUM
 		rb.velocity = new Vector2(0,rb.velocity.y);
 		
-		//THROW GRENADE BASED ON FLIP
+		//THROW A C4 BASED ON FLIP
 		if (isFlipped){
-			//StartCoroutine(gm.createMovingAttack(rb.position, bulletPrefab, new Vector2(-0.6f, 0.1f), 0.0f, target_position, 0.05f, 1.1f));
-			rb.AddForce(Vector2.right * 7.0f, ForceMode2D.Impulse);
-			disableTemp(0.12f);
+			StartCoroutine(gm.createTrapAttack(rb.position, c4Prefab, new Vector2(-0.6f, 0.1f), 0.0f, 0.05f));
+			disableTemp(0.08f);
 		} else {
-			//StartCoroutine(gm.createMovingAttack(rb.position, bulletPrefab, new Vector2(0.6f, 0.1f), 0.0f, target_position, 0.05f, 1.1f));
+			StartCoroutine(gm.createTrapAttack(rb.position, c4Prefab, new Vector2(0.6f, 0.1f), 0.0f, 0.05f));
 			rb.AddForce(Vector2.left * 7.0f, ForceMode2D.Impulse);
-			disableTemp(0.12f);
+			disableTemp(0.08f);
 		}
 		
+		//UPDATE ALL C4S IN GAME AND ADD TO CURRENT C4S
+		
+		
 		timeBtwAttack = startTimeBtwAttack;
+	}
+	
+	void doCharacterOneActivateC4(){
+		//BLOW UP THE NEXT AVAILABLE C4 IF ANY
+		
 	}
 	
 	//CHARACTER TWO ATTACK AND UPDATES
