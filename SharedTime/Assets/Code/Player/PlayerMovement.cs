@@ -55,6 +55,11 @@ public class PlayerMovement : MonoBehaviour
 	//public bool holstered;
 	GameManager gm;
 	
+	//ANIMATION
+	private Animator PlayerAnimator;
+	private int animationState = 0;
+	private bool animationLock;
+	
     void Start()
     {
         Character2 = false;
@@ -622,5 +627,60 @@ public class PlayerMovement : MonoBehaviour
 		rb.velocity = new Vector2(speed,rb.velocity.y);
 		yield return new WaitForSeconds(seconds);
 		rb.velocity = new Vector2(0,rb.velocity.y);
+	}
+	
+	
+	//FOR ANIMATIONS
+	private IEnumerator tempAnimLock(float seconds){
+		animationLock = true;
+		yield return new WaitForSeconds(seconds);
+		animationLock = false;
+	}
+	
+	private void changeAnimation(string animationName){
+		if (!animationLock){
+			PlayerAnimator.Play(animationName);
+		}
+	}
+	
+	public void setAnimation(int animationNumber){
+		switch (animationNumber){
+			case 0:
+				SetToHeroIdle();
+			break;
+			case 1:
+				SetToHeroWalk();
+			break;
+			case 20:
+				SetToPirateIdle();
+			break;
+			case 21:
+				SetToPirateWalk();
+			break;
+		}
+	}
+	
+	void SetToHeroIdle()
+	{
+		animationState = 0;
+		changeAnimation("heroidle");
+	}
+	
+	void SetToHeroWalk()
+	{
+		animationState = 1;
+		PlayerAnimator.Play("herowalk");
+	}
+	
+	void SetToPirateIdle()
+	{
+		animationState = 20;
+		changeAnimation("pirateidle");
+	}
+	
+	void SetToPirateWalk()
+	{
+		animationState = 21;
+		PlayerAnimator.Play("piratewalk");
 	}
 }
