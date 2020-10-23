@@ -475,7 +475,7 @@ public class PlayerMovement : MonoBehaviour
             this.gameObject.transform.parent = null;
 
 			//Short jump
-            if (!Input.GetKey(KeyCode.Space) && rb.velocity.y > 2 && jumpCharge == 0)
+            if (!Input.GetKey(KeyCode.Space) && rb.velocity.y > 2)
             {
                 rb.gravityScale = 2.7f;
             }
@@ -489,7 +489,7 @@ public class PlayerMovement : MonoBehaviour
 			else
 				jumpCharge = 2;
 			
-			rb.gravityScale = 1.0f;
+			rb.gravityScale = 1.2f;
 		}
 		
         //Jumping
@@ -498,6 +498,7 @@ public class PlayerMovement : MonoBehaviour
             rb.AddForce(Vector2.up * jumpHeight, ForceMode2D.Impulse);
 			jumpCharge-=1;
             //isJumping = true;
+			rb.gravityScale = 1.2f;
         }
 	}
 	
@@ -506,15 +507,16 @@ public class PlayerMovement : MonoBehaviour
 		RaycastHit2D groundHit = Physics2D.Raycast(transform.position, Vector2.down, 10.0f, LayerMask.GetMask("Ground"));
 		
 		if (groundHit){
-			//Debug.Log(groundHit.distance);
+			Debug.Log(groundHit.distance);
 			
-			if (groundHit.distance < 0.43f){
+			if (groundHit.distance < 0.50f){
 				isJumping = false;
 				return isJumping;
 			}
-		}
+		} 
 		
 		isJumping = true;
+		
 		return isJumping;
 	}
 	//

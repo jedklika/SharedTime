@@ -44,7 +44,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 52ae6c045bdda994f8767398b70c4949, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  trapTrigger: {fileID: 8919438728559186993, guid: 0e863ea35c616d24bbe1b3b92d5e241b,
+  trapTrigger: {fileID: 1029451381028759545, guid: 0e863ea35c616d24bbe1b3b92d5e241b,
     type: 3}
   trapActivated: 0
 --- !u!1 &8590346512364924953
