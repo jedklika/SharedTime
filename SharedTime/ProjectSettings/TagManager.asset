@@ -15,6 +15,9 @@ TagManager:
   - Right
   - Crate
   - C4
+  - explodableDoor
+  - Ladder
+  - explosion
   layers:
   - Default
   - TransparentFX

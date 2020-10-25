@@ -19,6 +19,8 @@ public class CamFollow : MonoBehaviour
 	
 	public Transform parallax_position;
 	public SpriteRenderer parallax_sprite;
+	public float parallax_x_limit, parallax_y_limit;
+	public float parallax_x_origin, parallax_y_origin;
 	
 	void Start(){
 		finalOffset = offset;
@@ -58,16 +60,21 @@ public class CamFollow : MonoBehaviour
 	
 	private void updateParallax(){
 		float x_parallax, y_parallax;
-		x_parallax = characterBody.position.x/20;
+		x_parallax = parallax_x_origin - characterBody.position.x/20;
 		
-		if (x_parallax > 10.0f)
-			x_parallax = 10.0f;
-		else if (x_parallax < -10.0f)
-			x_parallax = -10.0f;
+		if (x_parallax > parallax_x_limit)
+			x_parallax = parallax_x_limit;
+		else if (x_parallax < -parallax_x_limit)
+			x_parallax = -parallax_x_limit;
 		
-		y_parallax = characterBody.position.y/15;
+		y_parallax = parallax_y_origin - characterBody.position.y/15;
 		
-		Vector3 new_parallax = new Vector3(target.position.x - x_parallax, target.position.y + 1.1f - y_parallax, background_position.position.z);
+		if (y_parallax > parallax_y_limit)
+			y_parallax = parallax_y_limit;
+		else if (y_parallax < -parallax_y_limit)
+			y_parallax = -parallax_y_limit;
+		
+		Vector3 new_parallax = new Vector3(target.position.x + x_parallax, target.position.y + 1.1f + y_parallax, background_position.position.z);
 		parallax_position.position = new_parallax;
 	}
 	

@@ -28,11 +28,13 @@ public class PlayerMovement : MonoBehaviour
     SpriteRenderer S;
 	public float delay;
 
+	//GUN
 	public bool characterShooting = false;
 	int ammo;
 	public int max_ammo;
 	public GameObject bulletPrefab;
 	
+	//C4
 	public int c4_ammo;
 	public int max_c4_ammo;
 	public GameObject c4PrefabLeft;
@@ -41,6 +43,7 @@ public class PlayerMovement : MonoBehaviour
 	public int c4_count = 0;
 	public int max_c4_on_field;					//for all c4s currently set up
 	
+	//MELEE
 	public GameObject right_slash_1;
 	public GameObject right_slash_2;
 	public GameObject right_slash_3;
@@ -51,14 +54,16 @@ public class PlayerMovement : MonoBehaviour
 	
 	private int melee_sequence = 0;
 	
-	//public GameObject Gun;
-	//public bool holstered;
-	GameManager gm;
+	//LADDER
+	public bool onLadder = false;
 	
 	//ANIMATION
 	private Animator PlayerAnimator;
 	private int animationState = 0;
 	private bool animationLock;
+	
+	//GAMEMANAGER
+	GameManager gm;
 	
     void Start()
     {
@@ -75,12 +80,11 @@ public class PlayerMovement : MonoBehaviour
 		Time.timeScale = 1;
 		ammo = max_ammo;
 		c4_ammo = max_c4_ammo;
-
 	}
 	
     void Update()
     {
-		if (Input.GetKeyDown(KeyCode.X) && !isJumping && !characterShooting)
+		if (Input.GetKeyDown(KeyCode.X) && !isJumping && !characterShooting && !onLadder)
 			StartCoroutine(updateCharacterSwitch());
 		
 		/*
@@ -118,38 +122,7 @@ public class PlayerMovement : MonoBehaviour
 		//Movement
 		//left
 		if (characterEnabled)
-        if (Input.GetAxisRaw("Horizontal") < 0f)
-        {
-			isFlipped = true;
-			
-			if (checkPush())
-				rb.velocity = new Vector3(-Speed, rb.velocity.y, 0f);
-			else
-				rb.velocity = new Vector3(0, rb.velocity.y, 0f);
-			
-            //transform.localScale = new Vector3(-1f, 1f, 1f);
-			
-			if (gm.sprint)
-				gm.reduceSprint();
-        }
-        else if (Input.GetAxisRaw("Horizontal") > 0f)
-        {
-			isFlipped = false;
-			
-			if (checkPush())
-				rb.velocity = new Vector3(Speed, rb.velocity.y, 0f);
-			else
-				rb.velocity = new Vector3(0, rb.velocity.y, 0f);
-			
-            //transform.localScale = new Vector3(1f, 1f, 1f);
-			
-			if (gm.sprint)
-				gm.reduceSprint();
-        }
-        else
-        {
-            rb.velocity = new Vector3(0f, rb.velocity.y, 0f);
-        }
+			updateMovement();
 		
 		
 		//UPDATING C4 COUNT
@@ -158,6 +131,44 @@ public class PlayerMovement : MonoBehaviour
 		currentc4s = GameObject.FindGameObjectsWithTag("C4");
 		
 		c4_count = currentc4s.Length;
+	}
+	
+	private void updateMovement(){
+		//CHECK IF ON A LADDER
+		if (!onLadder){
+			if (Input.GetAxisRaw("Horizontal") < 0f)
+			{
+				isFlipped = true;
+				
+				if (checkPush())
+					rb.velocity = new Vector3(-Speed, rb.velocity.y, 0f);
+				else
+					rb.velocity = new Vector3(0, rb.velocity.y, 0f);
+				
+				//transform.localScale = new Vector3(-1f, 1f, 1f);
+				
+				if (gm.sprint)
+					gm.reduceSprint();
+			}
+			else if (Input.GetAxisRaw("Horizontal") > 0f)
+			{
+				isFlipped = false;
+				
+				if (checkPush())
+					rb.velocity = new Vector3(Speed, rb.velocity.y, 0f);
+				else
+					rb.velocity = new Vector3(0, rb.velocity.y, 0f);
+				
+				//transform.localScale = new Vector3(1f, 1f, 1f);
+				
+				if (gm.sprint)
+					gm.reduceSprint();
+			}
+			else
+			{
+				rb.velocity = new Vector3(0f, rb.velocity.y, 0f);
+			}
+		}
 	}
 	
 	//CONTROLS AND UPDATE FUNCTIONS
@@ -371,7 +382,7 @@ public class PlayerMovement : MonoBehaviour
 				rb.AddForce(Vector2.left * 4.0f, ForceMode2D.Impulse);
 				StartCoroutine(disableTemp(0.18f));
 				melee_sequence = 0;
-				timeBtwAttack = startTimeBtwAttack;
+				timeBtwAttack = startTimeBtwAttack/2;
 			}
 		} else {
 			if (melee_sequence == 0){
@@ -389,7 +400,7 @@ public class PlayerMovement : MonoBehaviour
 				rb.AddForce(Vector2.right * 4.0f, ForceMode2D.Impulse);
 				StartCoroutine(disableTemp(0.18f));
 				melee_sequence = 0;
-				timeBtwAttack = startTimeBtwAttack;
+				timeBtwAttack = startTimeBtwAttack/2;
 			}
 		}
 	}
@@ -412,10 +423,10 @@ public class PlayerMovement : MonoBehaviour
 			//
 			
 			if (pushHit1){
-				Debug.Log(pushHit1.distance);
+				//Debug.Log(pushHit1.distance);
 				
 				if (pushHit1.distance < 0.5f){
-					if (pushHit1.collider.CompareTag("Ground")){
+					if (pushHit1.collider.CompareTag("Ground") || pushHit1.collider.CompareTag("explodableDoor")){
 						return false;
 					} else {
 						return Character2;
@@ -427,7 +438,7 @@ public class PlayerMovement : MonoBehaviour
 				//Debug.Log(pushHit.distance);
 				
 				if (pushHit2.distance < 0.5f){
-					if (pushHit2.collider.CompareTag("Ground")){
+					if (pushHit2.collider.CompareTag("Ground") || pushHit1.collider.CompareTag("explodableDoor")){
 						return false;
 					} else {
 						return Character2;
@@ -441,7 +452,7 @@ public class PlayerMovement : MonoBehaviour
 			pushHit2 = Physics2D.Raycast(pushHit2position, Vector2.right, 10.0f, LayerMask.GetMask("Ground"));
 			
 			if (pushHit1){
-				Debug.Log(pushHit1.distance);
+				//Debug.Log(pushHit1.distance);
 				
 				if (pushHit1.distance < 0.5f){
 					if (pushHit1.collider.CompareTag("Ground")){
@@ -499,7 +510,14 @@ public class PlayerMovement : MonoBehaviour
 			jumpCharge-=1;
             //isJumping = true;
 			rb.gravityScale = 1.2f;
+			
+			if (onLadder){
+				onLadder = false;
+			}
         }
+		
+		if (onLadder)
+			rb.gravityScale = 0.0f;
 	}
 	
 	private bool checkInAir(){
@@ -507,7 +525,7 @@ public class PlayerMovement : MonoBehaviour
 		RaycastHit2D groundHit = Physics2D.Raycast(transform.position, Vector2.down, 10.0f, LayerMask.GetMask("Ground"));
 		
 		if (groundHit){
-			Debug.Log(groundHit.distance);
+			//Debug.Log(groundHit.distance);
 			
 			if (groundHit.distance < 0.50f){
 				isJumping = false;
@@ -521,6 +539,9 @@ public class PlayerMovement : MonoBehaviour
 	}
 	//
 	//
+	public void snapXToPosition(float x_position){
+		rb.MovePosition(new Vector2(x_position,rb.position.y));
+	}
 	
     void OnCollisionEnter2D(Collision2D col)
     {
@@ -645,7 +666,7 @@ public class PlayerMovement : MonoBehaviour
 		}
 	}
 	
-	public void setAnimation(int animationNumber){
+	public void SetAnimation(int animationNumber){
 		switch (animationNumber){
 			case 0:
 				SetToHeroIdle();
@@ -653,11 +674,20 @@ public class PlayerMovement : MonoBehaviour
 			case 1:
 				SetToHeroWalk();
 			break;
+			case 2:
+				//SetToHeroRun();
+			break;
+			case 4:
+				SetToHeroClimb();
+			break;
 			case 20:
 				SetToPirateIdle();
 			break;
 			case 21:
 				SetToPirateWalk();
+			break;
+			case 24:
+				SetToPirateClimb();
 			break;
 		}
 	}
@@ -674,6 +704,11 @@ public class PlayerMovement : MonoBehaviour
 		PlayerAnimator.Play("herowalk");
 	}
 	
+	void SetToHeroClimb()
+	{
+		
+	}
+	
 	void SetToPirateIdle()
 	{
 		animationState = 20;
@@ -684,5 +719,10 @@ public class PlayerMovement : MonoBehaviour
 	{
 		animationState = 21;
 		PlayerAnimator.Play("piratewalk");
+	}
+	
+	void SetToPirateClimb()
+	{
+	
 	}
 }

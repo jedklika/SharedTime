@@ -28,7 +28,7 @@ public class c4_throw : MonoBehaviour
 	
 	void OnTriggerEnter2D(Collider2D col){
 		if (!grounded){
-			if (col.CompareTag("Ground")){
+			if (col.CompareTag("Ground") || col.CompareTag("explodableDoor")){
 				rb.bodyType = RigidbodyType2D.Static;
 			}
 		}
