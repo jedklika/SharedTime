@@ -18,11 +18,8 @@ public class destroyGround : MonoBehaviour
 	
 	void OnTriggerEnter2D(Collider2D other)
     {
-		Debug.Log(other.tag);
-		Debug.Log(other.name);
-		
 		if (other.CompareTag("explodableDoor")){
-			Debug.Log("Destroying Door");
+			//Debug.Log("Destroying Door");
 			Destroy(other.gameObject);
 		}
 	}

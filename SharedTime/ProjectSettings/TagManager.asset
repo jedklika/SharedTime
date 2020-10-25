@@ -19,6 +19,8 @@ TagManager:
   - Ladder
   - explosion
   - background
+  - Target
+  - bullet
   layers:
   - Default
   - TransparentFX

@@ -21,6 +21,7 @@ public class Ladder : MonoBehaviour
 				if (!player.onLadder){
 					player.snapXToPosition(gameObject.transform.position.x);
 					player.onLadder = true;
+					player.characterShooting = false;
 				}
 				
 				player.isJumping = false;
@@ -32,6 +33,7 @@ public class Ladder : MonoBehaviour
 				if (!player.onLadder){
 					player.snapXToPosition(gameObject.transform.position.x);
 					player.onLadder = true;
+					player.characterShooting = false;
 				}
 				
 				player.isJumping = false;
