@@ -24,14 +24,7 @@ public class explosionBlast : MonoBehaviour
     }
 	
 	void OnTriggerEnter2D(Collider2D other)
-    {
-		Debug.Log(other.tag);
-		
-		if (other.CompareTag("explodableDoor")){
-			Debug.Log("Destroying Door");
-			Destroy(other.gameObject);
-		}
-		
+    {	
         if (!hit_player && other.CompareTag("Player"))
         {
 			//DESTRUCTION ALREADY MANAGED ELSEWHERE

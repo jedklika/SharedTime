@@ -18,6 +18,7 @@ TagManager:
   - explodableDoor
   - Ladder
   - explosion
+  - background
   layers:
   - Default
   - TransparentFX
