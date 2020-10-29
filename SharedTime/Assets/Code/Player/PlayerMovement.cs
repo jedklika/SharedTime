@@ -26,6 +26,8 @@ public class PlayerMovement : MonoBehaviour
     public bool Character2;
 	public bool characterEnabled = true;
     SpriteRenderer S;
+	public Sprite Modern;
+	public Sprite Pirate;
 	public float delay;
 
 	//GUN
@@ -75,7 +77,7 @@ public class PlayerMovement : MonoBehaviour
         //ShotGunholstered = true;
         gm = FindObjectOfType<GameManager>();
         S = GetComponent<SpriteRenderer>();
-        S.color = Color.blue;
+		S.sprite = Pirate;
 		UI = FindObjectOfType<UI_manager>();
 		Time.timeScale = 1;
 		ammo = max_ammo;
@@ -182,7 +184,7 @@ public class PlayerMovement : MonoBehaviour
 				
 			Character2 = true;
 			Debug.Log("Character 2  Playing");
-			S.color = Color.green;
+			S.sprite = Modern;
 				
 		//SWITCH TO CHARACTER 1
 		}else{
@@ -193,7 +195,7 @@ public class PlayerMovement : MonoBehaviour
 				
 			Character2 = false;
 			Debug.Log("Character 1  Playing");
-			S.color = Color.blue;
+			S.sprite = Pirate;
 		}
 	}
 
