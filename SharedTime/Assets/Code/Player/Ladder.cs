@@ -16,7 +16,7 @@ public class Ladder : MonoBehaviour
     {
 		if (other.CompareTag("Player"))
 		{
-			if (Input.GetKey(KeyCode.W))
+			if (Input.GetKey(KeyCode.W)|| Input.GetKey(KeyCode.UpArrow))
 			{
 				if (!player.onLadder){
 					player.snapXToPosition(gameObject.transform.position.x);
@@ -28,7 +28,7 @@ public class Ladder : MonoBehaviour
 				other.GetComponent<Rigidbody2D>().velocity = new Vector2(0, speed);
 				player.SetAnimation(4);
 			}
-			else if (Input.GetKey(KeyCode.S))
+			else if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow))
 			{
 				if (!player.onLadder){
 					player.snapXToPosition(gameObject.transform.position.x);

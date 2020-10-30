@@ -533,8 +533,12 @@ public class PlayerMovement : MonoBehaviour
 				isJumping = false;
 				return isJumping;
 			}
-		} 
-		
+		}
+		if (onLadder)
+		{
+			isJumping = false;
+			return isJumping;
+		}
 		isJumping = true;
 		
 		return isJumping;
