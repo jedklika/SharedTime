@@ -31,9 +31,6 @@ public class PlayerMovement : MonoBehaviour
 	public float delay;
 
 	//GUN
-	public Transform gun_position;
-	public SpriteRenderer GunSprite;
-	
 	public bool characterShooting = false;
 	int ammo;
 	public int max_ammo;
@@ -49,9 +46,6 @@ public class PlayerMovement : MonoBehaviour
 	public int max_c4_on_field;					//for all c4s currently set up
 	
 	//MELEE
-	public Transform sword_position;
-	public SpriteRenderer SwordSprite;
-	
 	public GameObject right_slash_1;
 	public GameObject right_slash_2;
 	public GameObject right_slash_3;
@@ -66,8 +60,7 @@ public class PlayerMovement : MonoBehaviour
 	public bool onLadder = false;
 	
 	//ANIMATION
-	public SpriteRenderer PlayerSprite;
-	public Animator PlayerAnimator;
+	private Animator PlayerAnimator;
 	private int animationState = 0;
 	private bool animationLock;
 	
@@ -142,31 +135,12 @@ public class PlayerMovement : MonoBehaviour
 		c4_count = currentc4s.Length;
 	}
 	
-	private void flipWeapons(bool flipping){
-		if (flipping){
-			GunSprite.flipX = true;
-			gun_position.localPosition = new Vector3(-Math.Abs(gun_position.localPosition.x), gun_position.localPosition.y, 0);
-				
-			SwordSprite.flipX = true;
-			sword_position.localPosition = new Vector3(-Math.Abs(sword_position.localPosition.x), sword_position.localPosition.y, 0);
-		} else {
-			GunSprite.flipX = false;
-			gun_position.localPosition = new Vector3(Math.Abs(gun_position.localPosition.x), gun_position.localPosition.y, 0);
-				
-			SwordSprite.flipX = false;
-			sword_position.localPosition = new Vector3(Math.Abs(sword_position.localPosition.x), sword_position.localPosition.y, 0);
-		}
-	}
-	
 	private void updateMovement(){
 		//CHECK IF ON A LADDER
 		if (!onLadder){
 			if (Input.GetAxisRaw("Horizontal") < 0f)
 			{
-				isFlipped = PlayerSprite.flipX = true;
-				
-				//FLIP WEAPON POSITIONS
-				flipWeapons(true);
+				isFlipped = true;
 				
 				if (checkPush())
 					rb.velocity = new Vector3(-Speed, rb.velocity.y, 0f);
@@ -177,19 +151,10 @@ public class PlayerMovement : MonoBehaviour
 				
 				if (gm.sprint)
 					gm.reduceSprint();
-				
-				if (Character2){
-					SetAnimation(21);
-				} else {
-					SetAnimation(1);
-				}
 			}
 			else if (Input.GetAxisRaw("Horizontal") > 0f)
 			{
-				isFlipped = PlayerSprite.flipX = false;
-				
-				//FLIP WEAPON POSITIONS
-				flipWeapons(false);
+				isFlipped = false;
 				
 				if (checkPush())
 					rb.velocity = new Vector3(Speed, rb.velocity.y, 0f);
@@ -200,22 +165,10 @@ public class PlayerMovement : MonoBehaviour
 				
 				if (gm.sprint)
 					gm.reduceSprint();
-				
-				if (Character2){
-					SetAnimation(21);
-				} else {
-					SetAnimation(1);
-				}
 			}
 			else
 			{
 				rb.velocity = new Vector3(0f, rb.velocity.y, 0f);
-				
-				if (Character2){
-					SetAnimation(20);
-				} else {
-					SetAnimation(0);
-				}
 			}
 		}
 	}
@@ -230,7 +183,6 @@ public class PlayerMovement : MonoBehaviour
 			characterEnabled = true;
 				
 			Character2 = true;
-			showSword();
 			Debug.Log("Character 2  Playing");
 			S.sprite = Modern;
 				
@@ -242,20 +194,11 @@ public class PlayerMovement : MonoBehaviour
 			characterEnabled = true;
 				
 			Character2 = false;
-			unshowSword();
 			Debug.Log("Character 1  Playing");
 			S.sprite = Pirate;
 		}
 	}
 
-	void showGun(){
-		GunSprite.color = Color.white;
-	}
-	
-	void unshowGun(){
-		GunSprite.color = Color.clear;
-	}
-	
 	//CHARACTER ONE ATTACK AND UPDATES
 	void updateCharacterOne(){
 		//Sprinting
@@ -281,13 +224,11 @@ public class PlayerMovement : MonoBehaviour
 			if (Input.GetKeyDown(KeyCode.F) && timeBtwAttack <= 0)
 			{
 				characterShooting = false;
-				unshowGun();
 				
 				timeBtwAttack = startTimeBtwAttack;
 			//LOBBING GRENADE
 			} else if (Input.GetKeyDown(KeyCode.G) && timeBtwAttack <= 0) {
 				characterShooting = false;
-				unshowGun();
 				
 				doCharacterOneC4();
 			} else if (Input.GetKeyDown(KeyCode.H) && timeBtwAttack <= 0) {
@@ -304,7 +245,6 @@ public class PlayerMovement : MonoBehaviour
 			if (Input.GetKeyDown(KeyCode.F) && timeBtwAttack <= 0)
 			{
 				characterShooting = true;
-				showGun();
 				/*
 				Collider2D[] enemiesToDamage = Physics2D.OverlapCircleAll(attackPos.position, attackRange, whatIsEnemies);
 				for (int i = 0; i < enemiesToDamage.Length; i++)
@@ -383,16 +323,6 @@ public class PlayerMovement : MonoBehaviour
 			currentc4s[0].transform.GetChild(0).gameObject.GetComponent<trapDetect>().activateTrap();
 		}
 	}
-	
-	
-	void showSword(){
-		SwordSprite.color = Color.white;
-	}
-	
-	void unshowSword(){
-		SwordSprite.color = Color.clear;
-	}
-	
 	
 	//CHARACTER TWO ATTACK AND UPDATES
 	void updateCharacterTwo(){
@@ -500,8 +430,6 @@ public class PlayerMovement : MonoBehaviour
 				if (pushHit1.distance < 0.5f){
 					if (pushHit1.collider.CompareTag("Ground") || pushHit1.collider.CompareTag("explodableDoor")){
 						return false;
-					} else if (pushHit1.collider.CompareTag("Door")) {
-						return gm.keys > 0;
 					} else {
 						return Character2;
 					}
@@ -514,8 +442,6 @@ public class PlayerMovement : MonoBehaviour
 				if (pushHit2.distance < 0.5f){
 					if (pushHit2.collider.CompareTag("Ground") || pushHit1.collider.CompareTag("explodableDoor")){
 						return false;
-					} else if (pushHit1.collider.CompareTag("Door")) {
-						return gm.keys > 0;
 					} else {
 						return Character2;
 					}
@@ -533,8 +459,6 @@ public class PlayerMovement : MonoBehaviour
 				if (pushHit1.distance < 0.5f){
 					if (pushHit1.collider.CompareTag("Ground")){
 						return false;
-					} else if (pushHit1.collider.CompareTag("Door")) {
-						return gm.keys > 0;
 					} else {
 						return Character2;
 					}
@@ -547,8 +471,6 @@ public class PlayerMovement : MonoBehaviour
 				if (pushHit2.distance < 0.5f){
 					if (pushHit2.collider.CompareTag("Ground")){
 						return false;
-					} else if (pushHit1.collider.CompareTag("Door")) {
-						return gm.keys > 0;
 					} else {
 						return Character2;
 					}
@@ -612,11 +534,6 @@ public class PlayerMovement : MonoBehaviour
 				return isJumping;
 			}
 		} 
-		
-		if (onLadder){
-			isJumping = false;
-			return isJumping;
-		}
 		
 		isJumping = true;
 		
@@ -780,13 +697,13 @@ public class PlayerMovement : MonoBehaviour
 	void SetToHeroIdle()
 	{
 		animationState = 0;
-		changeAnimation("hero idle");
+		changeAnimation("heroidle");
 	}
 	
 	void SetToHeroWalk()
 	{
 		animationState = 1;
-		PlayerAnimator.Play("hero walking");
+		PlayerAnimator.Play("herowalk");
 	}
 	
 	void SetToHeroClimb()
@@ -797,13 +714,13 @@ public class PlayerMovement : MonoBehaviour
 	void SetToPirateIdle()
 	{
 		animationState = 20;
-		changeAnimation("pirate standing");
+		changeAnimation("pirateidle");
 	}
 	
 	void SetToPirateWalk()
 	{
 		animationState = 21;
-		PlayerAnimator.Play("pirate walking");
+		PlayerAnimator.Play("piratewalk");
 	}
 	
 	void SetToPirateClimb()
