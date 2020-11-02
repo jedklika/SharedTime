@@ -30,7 +30,10 @@ public class PlayerMovement : MonoBehaviour
 	public Sprite Pirate;
 	public float delay;
 
-	//GUN
+	//HERO GUN
+	public Transform gun_position;
+	public SpriteRenderer hero_gun;
+	
 	public bool characterShooting = false;
 	int ammo;
 	public int max_ammo;
@@ -46,6 +49,9 @@ public class PlayerMovement : MonoBehaviour
 	public int max_c4_on_field;					//for all c4s currently set up
 	
 	//MELEE
+	public Transform sword_position;
+	public SpriteRenderer pirate_sword;
+	
 	public GameObject right_slash_1;
 	public GameObject right_slash_2;
 	public GameObject right_slash_3;
@@ -56,11 +62,15 @@ public class PlayerMovement : MonoBehaviour
 	
 	private int melee_sequence = 0;
 	
+	//FLINTLOCK
+	public Transform flintlock_position;
+	public SpriteRenderer flintlock;
+	
 	//LADDER
 	public bool onLadder = false;
 	
 	//ANIMATION
-	private Animator PlayerAnimator;
+	public Animator PlayerAnimator;
 	private int animationState = 0;
 	private bool animationLock;
 	
@@ -135,12 +145,21 @@ public class PlayerMovement : MonoBehaviour
 		c4_count = currentc4s.Length;
 	}
 	
+	private void flipWeapons(bool flip){
+		if (flip){
+			
+		} else {
+			
+		}
+	}
+	
 	private void updateMovement(){
 		//CHECK IF ON A LADDER
 		if (!onLadder){
 			if (Input.GetAxisRaw("Horizontal") < 0f)
 			{
-				isFlipped = true;
+				isFlipped = S.flipX = true;
+				flipWeapons(true);
 				
 				if (checkPush())
 					rb.velocity = new Vector3(-Speed, rb.velocity.y, 0f);
@@ -151,10 +170,16 @@ public class PlayerMovement : MonoBehaviour
 				
 				if (gm.sprint)
 					gm.reduceSprint();
+					
+				if (Character2)
+					SetAnimation(21);
+				else
+					SetAnimation(1);
 			}
 			else if (Input.GetAxisRaw("Horizontal") > 0f)
 			{
-				isFlipped = false;
+				isFlipped = S.flipX = false;
+				flipWeapons(false);
 				
 				if (checkPush())
 					rb.velocity = new Vector3(Speed, rb.velocity.y, 0f);
@@ -165,10 +190,20 @@ public class PlayerMovement : MonoBehaviour
 				
 				if (gm.sprint)
 					gm.reduceSprint();
+					
+				if (Character2)
+					SetAnimation(21);
+				else
+					SetAnimation(1);
 			}
 			else
 			{
 				rb.velocity = new Vector3(0f, rb.velocity.y, 0f);
+				
+				if (Character2)
+					SetAnimation(20);
+				else
+					SetAnimation(0);
 			}
 		}
 	}
@@ -701,13 +736,13 @@ public class PlayerMovement : MonoBehaviour
 	void SetToHeroIdle()
 	{
 		animationState = 0;
-		changeAnimation("heroidle");
+		changeAnimation("hero_standing");
 	}
 	
 	void SetToHeroWalk()
 	{
 		animationState = 1;
-		PlayerAnimator.Play("herowalk");
+		PlayerAnimator.Play("hero_walking");
 	}
 	
 	void SetToHeroClimb()
@@ -718,13 +753,13 @@ public class PlayerMovement : MonoBehaviour
 	void SetToPirateIdle()
 	{
 		animationState = 20;
-		changeAnimation("pirateidle");
+		changeAnimation("pirate_standing");
 	}
 	
 	void SetToPirateWalk()
 	{
 		animationState = 21;
-		PlayerAnimator.Play("piratewalk");
+		PlayerAnimator.Play("pirate_walking");
 	}
 	
 	void SetToPirateClimb()
