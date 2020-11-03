@@ -12,6 +12,7 @@ public class Patrol : MonoBehaviour
     public int health;
     Rigidbody2D Rb;
     int waypointIndex = 0;
+	public SpriteRenderer S;
 	
 	public int enemyID;
 
@@ -47,13 +48,13 @@ public class Patrol : MonoBehaviour
         if (collision.gameObject.CompareTag("Right") && canFlip)
         {
             //transform.localScale = new Vector3(-1f, 1f, 1f);
-            FoeFlipped = true;
+            FoeFlipped = S.flipX = true;
         }
 
         if (collision.gameObject.CompareTag("Left") && canFlip)
         {
             //transform.localScale = new Vector3(1f, 1f, 1f);
-            FoeFlipped = false;
+            FoeFlipped = S.flipX =  false;
         }
     }
    

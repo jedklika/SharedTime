@@ -38,6 +38,8 @@ public class PlayerMovement : MonoBehaviour
 	int ammo;
 	public int max_ammo;
 	public GameObject bulletPrefab;
+	public int clip_size;
+	int current_clip;
 	
 	//C4
 	public int c4_ammo;
@@ -147,9 +149,23 @@ public class PlayerMovement : MonoBehaviour
 	
 	private void flipWeapons(bool flip){
 		if (flip){
+			gun_position.localPosition = new Vector3(-Math.Abs(gun_position.localPosition.x), gun_position.localPosition.y, 0);
+			hero_gun.flipX = true;
 			
+			sword_position.localPosition = new Vector3(-Math.Abs(sword_position.localPosition.x), sword_position.localPosition.y, 0);
+			pirate_sword.flipX = true;
+			
+			flintlock_position.localPosition = new Vector3(-Math.Abs(flintlock_position.localPosition.x), flintlock_position.localPosition.y, 0);
+			flintlock.flipX = true;
 		} else {
+			gun_position.localPosition = new Vector3(Math.Abs(gun_position.localPosition.x), gun_position.localPosition.y, 0);
+			hero_gun.flipX = false;
 			
+			sword_position.localPosition = new Vector3(Math.Abs(sword_position.localPosition.x), sword_position.localPosition.y, 0);
+			pirate_sword.flipX = false;
+			
+			flintlock_position.localPosition = new Vector3(Math.Abs(flintlock_position.localPosition.x), flintlock_position.localPosition.y, 0);
+			flintlock.flipX = false;
 		}
 	}
 	
@@ -465,6 +481,8 @@ public class PlayerMovement : MonoBehaviour
 				if (pushHit1.distance < 0.5f){
 					if (pushHit1.collider.CompareTag("Ground") || pushHit1.collider.CompareTag("explodableDoor")){
 						return false;
+					} else if (pushHit1.collider.CompareTag("Door")){
+						return gm.keys > 0;
 					} else {
 						return Character2;
 					}
@@ -477,6 +495,8 @@ public class PlayerMovement : MonoBehaviour
 				if (pushHit2.distance < 0.5f){
 					if (pushHit2.collider.CompareTag("Ground") || pushHit1.collider.CompareTag("explodableDoor")){
 						return false;
+					} else if (pushHit1.collider.CompareTag("Door")){
+						return gm.keys > 0;
 					} else {
 						return Character2;
 					}
