@@ -754,14 +754,14 @@ public class PlayerMovement : MonoBehaviour
 		
         if (col.gameObject.CompareTag("LowDanger"))
         {
-            gm.playerHealth -= 20;
+            gm.setDamage(20);
             //Debug.Log(gm.playerHealth);
 			StartCoroutine(Danger());
 		}
 		
 		if (col.gameObject.CompareTag("HighDanger"))
         {
-            gm.playerHealth -= 50;
+            gm.setDamage(50);
             //Debug.Log(gm.playerHealth);
 			StartCoroutine(Danger());
 		}
@@ -776,7 +776,7 @@ public class PlayerMovement : MonoBehaviour
         //Acquiring health kit
         if (col.gameObject.CompareTag("Health"))
         {
-            gm.playerHealth += 10;
+            gm.setDamage(-10);
             Destroy(col.gameObject);
             //Debug.Log(gm.playerHealth);
 			StartCoroutine(Health());

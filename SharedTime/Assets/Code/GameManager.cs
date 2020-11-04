@@ -66,7 +66,6 @@ public class GameManager : MonoBehaviour
 	//Managing health
 	public void setDamage(float new_damage)
 	{
-		playerHealth-=new_damage;
 		
 		//Checking bounds
 		//Max
@@ -84,11 +83,12 @@ public class GameManager : MonoBehaviour
 		//Damage	(make sure not invincible)
 		if (new_damage > 0 && canBeDamaged)
 		{
+			playerHealth-=new_damage;
 			StartCoroutine(setInvincible());
 		} 
 		else if (new_damage < 0)
 		{
-			
+			playerHealth-=new_damage;
 		}
 	}
 	
