@@ -12,10 +12,12 @@ public class PlayerMovement : MonoBehaviour
     public float RunSpeed;
 	public bool isFlipped = false;
 	
-	private int jumpCharge = 1;
+	public int jumpCharge;
     public float jumpHeight;
     public bool isJumping = false;
-	
+	public float jump_update_delay = 0.4f;
+	float jump_delay = 0.0f;
+		
     private float timeBtwAttack;
     public float startTimeBtwAttack;
     public Transform attackPos;
@@ -650,8 +652,18 @@ public class PlayerMovement : MonoBehaviour
 	
 	
 	void updateJumping(){
-		if (isJumping)
-        {
+		//CHECKING IF IN AIR TO RECHARGE JUMPS
+		checkInAir();
+		
+		if (!isJumping){
+			//RECHARGE
+			if (Character2)
+				jumpCharge = 1;
+			else
+				jumpCharge = 2;
+			
+			rb.gravityScale = 1.2f;
+		} else {
             this.gameObject.transform.parent = null;
 
 			//Short jump
@@ -661,54 +673,54 @@ public class PlayerMovement : MonoBehaviour
             }
         }
 		
-		//CHECKING IF IN AIR TO RECHARGE JUMPS
-		if (!checkInAir()){
-			//RECHARGE
-			if (Character2)
-				jumpCharge = 1;
-			else
-				jumpCharge = 2;
+		if (onLadder)
+			rb.gravityScale = 0.0f;
 			
-			rb.gravityScale = 1.2f;
-		}
-		
         //Jumping
         if (Input.GetKeyDown(KeyCode.Space) && jumpCharge > 0 && characterEnabled)
         {
             rb.AddForce(Vector2.up * jumpHeight, ForceMode2D.Impulse);
 			jumpCharge-=1;
-            //isJumping = true;
+			jump_delay = 0.0f;
+            isJumping = true;
 			rb.gravityScale = 1.2f;
 			
 			if (onLadder){
 				onLadder = false;
 			}
+			
+			
         }
-		
-		if (onLadder)
-			rb.gravityScale = 0.0f;
 	}
 	
-	private bool checkInAir(){
-		//RAYCAST TO DETERMINE IF JUMPING OR NOT
-		RaycastHit2D groundHit = Physics2D.Raycast(transform.position, Vector2.down, 10.0f, LayerMask.GetMask("Ground"));
-		
-		if (groundHit){
-			//Debug.Log(groundHit.distance);
+	private int checkInAir(){
+		if (jump_delay > jump_update_delay){
+			jump_delay = 0.0f;
 			
-			if (groundHit.distance < 0.50f){
-				isJumping = false;
-				return isJumping;
+			//RAYCAST TO DETERMINE IF JUMPING OR NOT
+			RaycastHit2D groundHit = Physics2D.Raycast(transform.position, Vector2.down, 10.0f, LayerMask.GetMask("Ground"));
+			
+			if (groundHit){
+				//Debug.Log(groundHit.distance);
+				
+				if (groundHit.distance < 0.5){
+					isJumping = false;
+					return 0;
+				}
 			}
+			
+			if (onLadder)
+			{
+				isJumping = false;
+				return 0;
+			}
+			
+			isJumping = true;
+		} else {
+			jump_delay += Time.deltaTime;
 		}
-		if (onLadder)
-		{
-			isJumping = false;
-			return isJumping;
-		}
-		isJumping = true;
 		
-		return isJumping;
+		return 0;
 	}
 	//
 	//
