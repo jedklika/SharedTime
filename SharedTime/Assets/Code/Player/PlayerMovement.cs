@@ -35,11 +35,13 @@ public class PlayerMovement : MonoBehaviour
 	public SpriteRenderer hero_gun;
 	
 	public bool characterShooting = false;
-	int ammo;
+	public int ammo;
 	public int max_ammo;
 	public GameObject bulletPrefab;
-	public int clip_size;
-	int current_clip;
+	
+	public int hero_gun_capacity;
+	public int max_hero_gun_capacity;
+	public float reload_hero_gun_rate;
 	
 	//C4
 	public int c4_ammo;
@@ -49,6 +51,8 @@ public class PlayerMovement : MonoBehaviour
 	public GameObject[] currentc4s;
 	public int c4_count = 0;
 	public int max_c4_on_field;					//for all c4s currently set up
+	
+	public float c4_cooldown;
 	
 	//MELEE
 	public Transform sword_position;
@@ -67,6 +71,14 @@ public class PlayerMovement : MonoBehaviour
 	//FLINTLOCK
 	public Transform flintlock_position;
 	public SpriteRenderer flintlock;
+	
+	public int flintlock_ammo;
+	public int max_flintlock_ammo;
+	public GameObject flintlockBulletPrefab;
+	
+	public int flintlock_capacity;
+	public int max_flintlock_capacity;
+	public float reload_flintlock_rate;
 	
 	//LADDER
 	public bool onLadder = false;
@@ -121,10 +133,12 @@ public class PlayerMovement : MonoBehaviour
 		updateJumping();
 
         //Testing
+		/*
         if (Input.GetKeyDown(KeyCode.R))
         {
             SceneManager.LoadScene(0);
         }
+		*/
         if (gm.playerHealth <= 0)
         {
 			UI.InfoText.text = "Great now we are dead, hope you enjoy being stuck together for entirety";
@@ -229,24 +243,34 @@ public class PlayerMovement : MonoBehaviour
 		//SWITCH TO CHARACTER 2
 		if (!Character2){
 			characterEnabled = false;
+			SetAnimation(1);
 			rb.velocity = new Vector3(0, rb.velocity.y, 0f);
 			yield return new WaitForSeconds(1);
+			SetAnimation(21);
 			characterEnabled = true;
-				
+			
 			Character2 = true;
 			Debug.Log("Character 2  Playing");
-			S.sprite = Modern;
+			
+			showSword();
+			unshowHeroGun();
+			unshowFlintlock();
 				
 		//SWITCH TO CHARACTER 1
 		}else{
 			characterEnabled = false;
+			SetAnimation(21);
 			rb.velocity = new Vector3(0, rb.velocity.y, 0f);
 			yield return new WaitForSeconds(1);
+			SetAnimation(1);
 			characterEnabled = true;
 				
 			Character2 = false;
 			Debug.Log("Character 1  Playing");
-			S.sprite = Pirate;
+			
+			unshowSword();
+			unshowHeroGun();
+			unshowFlintlock();
 		}
 	}
 
@@ -272,53 +296,37 @@ public class PlayerMovement : MonoBehaviour
 				doCharacterOneShooting();
 			}
 			
-			if (Input.GetKeyDown(KeyCode.F) && timeBtwAttack <= 0)
-			{
-				unshowHeroGun();
-				characterShooting = false;
-				
+			if (Input.GetKeyDown(KeyCode.R)){
+				StartCoroutine(doCharacterOneReload());
 				timeBtwAttack = startTimeBtwAttack;
-			//LOBBING GRENADE
-			} else if (Input.GetKeyDown(KeyCode.G) && timeBtwAttack <= 0) {
-				unshowHeroGun();
-				characterShooting = false;
-				
-				doCharacterOneC4();
-			} else if (Input.GetKeyDown(KeyCode.H) && timeBtwAttack <= 0) {
-				doCharacterOneActivateC4();
-			}
-			else
-			{
-				timeBtwAttack -= Time.deltaTime;
 			}
 			
-			
-		//NON SHOOTING STANCE
-		} else {
-			if (Input.GetKeyDown(KeyCode.F) && timeBtwAttack <= 0)
-			{
-				showHeroGun();
-				characterShooting = true;
-				/*
-				Collider2D[] enemiesToDamage = Physics2D.OverlapCircleAll(attackPos.position, attackRange, whatIsEnemies);
-				for (int i = 0; i < enemiesToDamage.Length; i++)
-				{
-					Debug.Log("Enemy damage" + enemiesToDamage[i]);
-					enemiesToDamage[i].GetComponent<Patrol>().health -= damage;
-
+		} 
+		
+		if (timeBtwAttack <= 0){
+			if (Input.GetKeyDown(KeyCode.F)){
+				if (characterShooting){
+					unshowHeroGun();
+					characterShooting = false;
+				} else {
+					showHeroGun();
+					characterShooting = true;
 				}
-				*/
+				
 				timeBtwAttack = startTimeBtwAttack;
 			//LOBBING GRENADE
-			} else if (Input.GetKeyDown(KeyCode.G) && timeBtwAttack <= 0) {
+			} else if (Input.GetKeyDown(KeyCode.G)) {
+				if (characterShooting){
+					unshowHeroGun();
+					characterShooting = false;
+				}
+				
 				doCharacterOneC4();
-			} else if (Input.GetKeyDown(KeyCode.H) && timeBtwAttack <= 0) {
+			} else if (Input.GetKeyDown(KeyCode.H)) {
 				doCharacterOneActivateC4();
 			}
-			else
-			{
-				timeBtwAttack -= Time.deltaTime;
-			}
+		} else {
+			timeBtwAttack -= Time.deltaTime;
 		}
 	}
 	
@@ -333,7 +341,7 @@ public class PlayerMovement : MonoBehaviour
 	//SHOOTING STANCE
 	void doCharacterOneShooting(){
 		//REQUIREMENTS
-		if (ammo > 0){
+		if (hero_gun_capacity > 0){
 			//GET MOUSE POSITION
 			Vector3 mouse = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 			Vector2 target_position = new Vector2(mouse.x, mouse.y);
@@ -350,9 +358,25 @@ public class PlayerMovement : MonoBehaviour
 				disableTemp(0.12f);
 			}
 			
-			ammo-=1;
+			hero_gun_capacity-=1;
 			
 			timeBtwAttack = startTimeBtwAttack;
+		}
+	}
+	
+	IEnumerator doCharacterOneReload(){
+		yield return new WaitForSeconds(reload_hero_gun_rate);
+		
+		//GET CURRENT AMMO AMOUNT NEEDED FOR RELOAD
+		int test_use = ammo - (max_hero_gun_capacity - hero_gun_capacity);
+		
+		if (test_use >= 0){
+			ammo = test_use;
+			hero_gun_capacity = max_hero_gun_capacity;
+		} else {
+			//EMPTYING ALL CURRENT AMMO
+			hero_gun_capacity = ammo;
+			ammo = 0;
 		}
 	}
 	
@@ -399,36 +423,98 @@ public class PlayerMovement : MonoBehaviour
             gm.sprint = false;
             Speed = 4;
         }
-
-		if (characterShooting){
-			unshowSword();
-			showFlintlock();
-		} else {
-			showSword();
-			unshowFlintlock();
-		}
 		
         //Using weapon
-		//MELEE STRIKE
-        if (Input.GetKeyDown(KeyCode.F) && timeBtwAttack <= 0)
-        {
-			doCharacterTwoMeleeSwipe();
+		//SHOOTING STANCE
+		if (characterShooting){
+			if (Input.GetMouseButtonDown(0) && timeBtwAttack <= 0){
+				doCharacterTwoShooting();
+			}
 			
-			/*
-            Collider2D[] enemiesToDamage = Physics2D.OverlapCircleAll(attackPos.position, attackRange, whatIsEnemies);
-            for (int i = 0; i < enemiesToDamage.Length; i++)
-            {
-                Debug.Log("Enemy damage" + enemiesToDamage[i]);
-                enemiesToDamage[i].GetComponent<Patrol>().health -= damage;
-
-            }
-            timeBtwAttack = startTimeBtwAttack;
-			*/
-        }
-        else
-        {
-            timeBtwAttack -= Time.deltaTime;
-        }
+			if (Input.GetKeyDown(KeyCode.R)){
+				StartCoroutine(doCharacterTwoReload());
+				timeBtwAttack = startTimeBtwAttack;
+			}
+		} 
+		
+		if (timeBtwAttack <= 0){
+			if (Input.GetKeyDown(KeyCode.F)){
+				if (!characterShooting){
+					unshowSword();
+					showFlintlock();
+				
+					characterShooting = true;
+				} else {
+					showSword();
+					unshowFlintlock();
+				
+					characterShooting = false;
+				}
+				
+				timeBtwAttack = startTimeBtwAttack;
+			//LOBBING GRENADE
+			} else if (Input.GetKeyDown(KeyCode.G)) {
+				if (characterShooting){
+					showSword();
+					unshowFlintlock();
+				
+					characterShooting = false;
+				}
+				
+				doCharacterTwoMeleeSwipe();
+			}
+		} else {
+			timeBtwAttack -= Time.deltaTime;
+		}
+	}
+	
+	void showFlintlock(){
+		flintlock.color = Color.white;
+	}
+	
+	void unshowFlintlock(){
+		flintlock.color = Color.clear;
+	}
+	
+	void doCharacterTwoShooting(){
+		//REQUIREMENTS
+		if (flintlock_capacity > 0){
+			//GET MOUSE POSITION
+			Vector3 mouse = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+			Vector2 target_position = new Vector2(mouse.x, mouse.y);
+			
+			Debug.Log(target_position);
+			
+			if (isFlipped){
+				StartCoroutine(gm.createMovingAttack(rb.position, flintlockBulletPrefab, new Vector2(-0.6f, 0.1f), 0.0f, target_position, 0.05f, 1.1f));
+				rb.AddForce(Vector2.right * 7.0f, ForceMode2D.Impulse);
+				disableTemp(0.12f);
+			} else {
+				StartCoroutine(gm.createMovingAttack(rb.position, flintlockBulletPrefab, new Vector2(0.6f, 0.1f), 0.0f, target_position, 0.05f, 1.1f));
+				rb.AddForce(Vector2.left * 7.0f, ForceMode2D.Impulse);
+				disableTemp(0.12f);
+			}
+			
+			flintlock_capacity-=1;
+			
+			timeBtwAttack = startTimeBtwAttack;
+		}
+	}
+	
+	IEnumerator doCharacterTwoReload(){
+		yield return new WaitForSeconds(reload_flintlock_rate);
+		
+		//GET CURRENT AMMO AMOUNT NEEDED FOR RELOAD
+		int test_use = flintlock_ammo - (max_flintlock_capacity - flintlock_capacity);
+		
+		if (test_use >= 0){
+			flintlock_ammo = test_use;
+			flintlock_capacity = max_flintlock_capacity;
+		} else {
+			//EMPTYING ALL CURRENT AMMO
+			flintlock_capacity = flintlock_ammo;
+			flintlock_ammo = 0;
+		}
 	}
 	
 	void showSword(){
@@ -482,14 +568,6 @@ public class PlayerMovement : MonoBehaviour
 				timeBtwAttack = startTimeBtwAttack/2;
 			}
 		}
-	}
-	
-	void showFlintlock(){
-		flintlock.color = Color.white;
-	}
-	
-	void unshowFlintlock(){
-		flintlock.color = Color.clear;
 	}
 	
 	//
@@ -674,7 +752,14 @@ public class PlayerMovement : MonoBehaviour
             }
         }
 		
-        if (col.gameObject.CompareTag("Danger"))
+        if (col.gameObject.CompareTag("LowDanger"))
+        {
+            gm.playerHealth -= 20;
+            //Debug.Log(gm.playerHealth);
+			StartCoroutine(Danger());
+		}
+		
+		if (col.gameObject.CompareTag("HighDanger"))
         {
             gm.playerHealth -= 50;
             //Debug.Log(gm.playerHealth);

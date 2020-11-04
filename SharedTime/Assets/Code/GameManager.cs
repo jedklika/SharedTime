@@ -11,6 +11,7 @@ public class GameManager : MonoBehaviour
 	public bool sprint;
 	private bool exhausted = false;
 	public float keys;
+	public bool canBeDamaged = true;
 	
 	UI_manager ui;
 	
@@ -62,11 +63,43 @@ public class GameManager : MonoBehaviour
 		SprintTime -= Time.deltaTime * 2;
 	}
 		
+	//Managing health
 	public void setDamage(float new_damage)
 	{
-		playerHealth -= new_damage;
+		playerHealth-=new_damage;
+		
+		//Checking bounds
+		//Max
+		if (playerHealth > playerMaxHealth)
+		{
+			playerHealth = playerMaxHealth;
+		//Min									--The player dies if this reaches 0
+		} 
+		else if (playerHealth <= 0)
+		{
+			playerHealth = 0;
+		}
+		
+		//Flashing and sounds
+		//Damage	(make sure not invincible)
+		if (new_damage > 0 && canBeDamaged)
+		{
+			StartCoroutine(setInvincible());
+		} 
+		else if (new_damage < 0)
+		{
+			
+		}
 	}
 	
+	IEnumerator setInvincible()
+	{
+		canBeDamaged = false;
+		
+		yield return new WaitForSeconds(1.5f);
+		
+		canBeDamaged = true;
+	}
 	
 	///SYSTEM FOR CREATING HITBOXES
 	//THE SPRITE OF A HITBOX IS MANAGED BY PLAYER OR ENEMIES

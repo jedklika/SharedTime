@@ -21,6 +21,8 @@ TagManager:
   - background
   - Target
   - bullet
+  - LowDanger
+  - HighDanger
   layers:
   - Default
   - TransparentFX
