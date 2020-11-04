@@ -274,11 +274,13 @@ public class PlayerMovement : MonoBehaviour
 			
 			if (Input.GetKeyDown(KeyCode.F) && timeBtwAttack <= 0)
 			{
+				unshowHeroGun();
 				characterShooting = false;
 				
 				timeBtwAttack = startTimeBtwAttack;
 			//LOBBING GRENADE
 			} else if (Input.GetKeyDown(KeyCode.G) && timeBtwAttack <= 0) {
+				unshowHeroGun();
 				characterShooting = false;
 				
 				doCharacterOneC4();
@@ -295,6 +297,7 @@ public class PlayerMovement : MonoBehaviour
 		} else {
 			if (Input.GetKeyDown(KeyCode.F) && timeBtwAttack <= 0)
 			{
+				showHeroGun();
 				characterShooting = true;
 				/*
 				Collider2D[] enemiesToDamage = Physics2D.OverlapCircleAll(attackPos.position, attackRange, whatIsEnemies);
@@ -317,6 +320,14 @@ public class PlayerMovement : MonoBehaviour
 				timeBtwAttack -= Time.deltaTime;
 			}
 		}
+	}
+	
+	void showHeroGun(){
+		hero_gun.color = Color.white;
+	}
+	
+	void unshowHeroGun(){
+		hero_gun.color = Color.clear;
 	}
 	
 	//SHOOTING STANCE
@@ -389,7 +400,14 @@ public class PlayerMovement : MonoBehaviour
             Speed = 4;
         }
 
-
+		if (characterShooting){
+			unshowSword();
+			showFlintlock();
+		} else {
+			showSword();
+			unshowFlintlock();
+		}
+		
         //Using weapon
 		//MELEE STRIKE
         if (Input.GetKeyDown(KeyCode.F) && timeBtwAttack <= 0)
@@ -411,6 +429,14 @@ public class PlayerMovement : MonoBehaviour
         {
             timeBtwAttack -= Time.deltaTime;
         }
+	}
+	
+	void showSword(){
+		pirate_sword.color = Color.white;
+	}
+	
+	void unshowSword(){
+		pirate_sword.color = Color.clear;
 	}
 	
 	void doCharacterTwoMeleeSwipe(){
@@ -456,6 +482,14 @@ public class PlayerMovement : MonoBehaviour
 				timeBtwAttack = startTimeBtwAttack/2;
 			}
 		}
+	}
+	
+	void showFlintlock(){
+		flintlock.color = Color.white;
+	}
+	
+	void unshowFlintlock(){
+		flintlock.color = Color.clear;
 	}
 	
 	//
