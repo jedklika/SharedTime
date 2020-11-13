@@ -517,7 +517,7 @@ MonoBehaviour:
   flintlock: {fileID: 2054832993}
   flintlock_ammo: 12
   max_flintlock_ammo: 12
-  flintlockBulletPrefab: {fileID: 2330587306574411890, guid: 90aed95ca3ef4ae45897bb0c9211aa17,
+  flintlockBulletPrefab: {fileID: 6141623134204969267, guid: 5c3c8bc9684e795438d87e20444dcb4c,
     type: 3}
   flintlock_capacity: 1
   max_flintlock_capacity: 1
