@@ -3093,7 +3093,7 @@ BoxCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 4.4278555, y: -2.9427538}
+  m_Offset: {x: 6.4549904, y: -2.9572363}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -3104,7 +3104,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 3.4578724, y: 0.4647131}
+  m_Size: {x: 7.512142, y: 0.4936781}
   m_EdgeRadius: 0
 --- !u!4 &864753300
 Transform:
@@ -4005,7 +4005,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1260875178}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 14.99, y: 1.42, z: 0}
+  m_LocalPosition: {x: 14.7, y: 1.42, z: 0}
   m_LocalScale: {x: 2, y: 2, z: 2}
   m_Children:
   - {fileID: 1257047975}
@@ -4051,10 +4051,11 @@ MonoBehaviour:
   health: 30
   S: {fileID: 1260875179}
   enemyID: 0
+  playerPosition: {fileID: 85239991}
   patrolField: {fileID: 1330988524}
-  field_cut_rate: 0.5
+  field_cut_rate: 1
   x_field_offset: 0.7
-  y_field_offset: 0.35
+  y_field_offset: 0.37
 --- !u!114 &1260875183
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4331,7 +4332,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 16, y: 11}
   m_EdgeRadius: 0
 --- !u!4 &1330988525
 Transform:
@@ -4342,7 +4343,7 @@ Transform:
   m_GameObject: {fileID: 1330988523}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 15, y: 2, z: 0}
-  m_LocalScale: {x: 2, y: 2, z: 2}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 9
