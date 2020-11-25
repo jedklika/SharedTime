@@ -23,6 +23,7 @@ TagManager:
   - bullet
   - LowDanger
   - HighDanger
+  - AI_Field
   layers:
   - Default
   - TransparentFX
