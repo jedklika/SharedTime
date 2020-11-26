@@ -13,6 +13,7 @@ public class Attack : MonoBehaviour
     Rigidbody2D Rb;
     public GameObject Bullet;
     Patrol P;
+	
     // Start is called before the first frame update
     void Start()
     {
@@ -25,7 +26,11 @@ public class Attack : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Rb.bodyType = RigidbodyType2D.Dynamic;
+        
+    }
+
+	public void updateAttack(){
+		Rb.bodyType = RigidbodyType2D.Dynamic;
         Rb.constraints = RigidbodyConstraints2D.FreezeRotation;
 
         if (Vector2.Distance(transform.position, player.position) > stopDistance)
@@ -62,8 +67,8 @@ public class Attack : MonoBehaviour
         {
             //transform.localScale = new Vector3(1f, 1f, 1f);
         }
-    }
-
+	}
+	
     void moveCharacter(Vector2 direction)
     {
         Rb.MovePosition((Vector2)transform.position + (direction * speed * Time.deltaTime));

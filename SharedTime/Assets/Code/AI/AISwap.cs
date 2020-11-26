@@ -8,6 +8,7 @@ public class AISwap : MonoBehaviour
     public bool Right;
     public SpriteRenderer LightFoe;
     public bool flipped;
+	
     // Start is called before the first frame update
     void Start()
     {
@@ -16,6 +17,7 @@ public class AISwap : MonoBehaviour
         LightFoe = GetComponentInParent<SpriteRenderer>();
 
     }
+	
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.CompareTag("Player") && Right)
