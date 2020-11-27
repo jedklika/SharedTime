@@ -9,7 +9,12 @@ public class PlayerMovement : MonoBehaviour
 {
     Rigidbody2D rb;
     public float Speed;
-    public float RunSpeed;
+	
+	public float WalkSpeed1;
+    public float RunSpeed1;
+	
+	public float WalkSpeed2;
+	public float RunSpeed2;
 	public bool isFlipped = false;
 	
 	public int jumpCharge;
@@ -282,12 +287,12 @@ public class PlayerMovement : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.LeftShift) && gm.SprintTime > 0 || Input.GetKeyDown(KeyCode.RightShift) && gm.SprintTime > 0)
         {
             gm.sprint = true;
-            Speed = 10;
+            Speed = RunSpeed1;
         } 
 		else if (Input.GetKeyUp(KeyCode.LeftShift) || Input.GetKeyUp(KeyCode.RightShift) || gm.SprintTime <= 0)
         {
             gm.sprint = false;
-            Speed = 5;
+            Speed = WalkSpeed1;
         }
 
 
@@ -418,12 +423,12 @@ public class PlayerMovement : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.LeftShift) && gm.SprintTime > 0 || Input.GetKeyDown(KeyCode.RightShift) && gm.SprintTime > 0)
         {
             gm.sprint = true;
-            Speed = 8;
+            Speed = RunSpeed2;
         } 
 		else if (Input.GetKeyUp(KeyCode.LeftShift) || Input.GetKeyUp(KeyCode.RightShift) || gm.SprintTime <= 0)
         {
             gm.sprint = false;
-            Speed = 4;
+            Speed = WalkSpeed2;
         }
 		
         //Using weapon

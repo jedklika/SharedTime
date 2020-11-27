@@ -60,7 +60,7 @@ public class GameManager : MonoBehaviour
 	}
 	
 	public void reduceSprint(){
-		SprintTime -= Time.deltaTime * 2;
+		SprintTime -= Time.deltaTime * 3.5f;
 	}
 		
 	//Managing health

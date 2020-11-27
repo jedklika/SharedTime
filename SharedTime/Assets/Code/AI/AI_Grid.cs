@@ -209,28 +209,28 @@ public class AI_Grid : MonoBehaviour
 				
 			if (flipped){
 				if (patrol_grid[sight_index_x,sight_index_y] != 10){
-					if (strength > 6)
+					if (strength > 7)
 						patrol_grid[sight_index_x,sight_index_y] = 21;
 					else
 						patrol_grid[sight_index_x,sight_index_y] = 22;
 					
 					updateSight(sight_index_x-1, sight_index_y, growth+1, strength-1, flipped);
 					
-					if (growth == 3){
+					if (growth == 2){
 						updateSight(sight_index_x-1, sight_index_y-1, 0, strength-1, flipped);
 						updateSight(sight_index_x-1, sight_index_y+1, 0, strength-1, flipped);
 					}
 				}
 			} else {
 				if (patrol_grid[sight_index_x,sight_index_y] != 10){
-					if (strength > 6)
+					if (strength > 7)
 						patrol_grid[sight_index_x,sight_index_y] = 21;
 					else
 						patrol_grid[sight_index_x,sight_index_y] = 22;
 						
 					updateSight(sight_index_x+1, sight_index_y, growth+1, strength-1, flipped);
 					
-					if (growth == 3){
+					if (growth == 2){
 						updateSight(sight_index_x+1, sight_index_y-1, 0, strength-1, flipped);
 						updateSight(sight_index_x+1, sight_index_y+1, 0, strength-1, flipped);
 					}
