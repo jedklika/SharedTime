@@ -50,7 +50,7 @@ public class Patrol : MonoBehaviour
 				FoeFlipped = S.flipX = false;
 			
 		} else {
-			grid.updateSight(20, FoeFlipped);
+			grid.updateSight(22, FoeFlipped);
 			
 			//GO RIGHT
 			transform.position = Vector2.MoveTowards(transform.position, new Vector2(transform.position.x + 5f, transform.position.y), speed*Time.deltaTime);

@@ -102,6 +102,7 @@ public class AI_Grid : MonoBehaviour
 		return patrol_flag;
 	}
 	
+	/*
 	void OnDrawGizmos(){
 		float patrol_grid_draw_x_iteration = 0, patrol_grid_draw_y_iteration = 0;
 		int x_index = 0, y_index = 0;
@@ -140,6 +141,7 @@ public class AI_Grid : MonoBehaviour
 			patrol_grid_draw_x_iteration+=field_cut_rate;
 		}
 	}
+	*/
 	
 	bool checkForGround(float x_to_raycast, float y_to_raycast){
 		Vector2 ground_spot = new Vector2(x_to_raycast, y_to_raycast);
@@ -196,11 +198,12 @@ public class AI_Grid : MonoBehaviour
 	}
 	
 	public void updateSight(int strength, bool flipped){
-		updateSight(self_index_x, self_index_y, 0, strength, flipped);
+		StartCoroutine(updateSight(self_index_x, self_index_y, 0, strength, flipped));
 	}
 	
-	void updateSight(int sight_index_x, int sight_index_y, int growth, int strength, bool flipped){
-
+	IEnumerator updateSight(int sight_index_x, int sight_index_y, int growth, int strength, bool flipped){
+		yield return new WaitForSeconds(0.001f);
+		
 		if (sight_index_x >= 1 &&
 			sight_index_x < patrol_grid_x_size-1 &&
 			sight_index_y >= 1 &&
@@ -214,11 +217,11 @@ public class AI_Grid : MonoBehaviour
 					else
 						patrol_grid[sight_index_x,sight_index_y] = 22;
 					
-					updateSight(sight_index_x-1, sight_index_y, growth+1, strength-1, flipped);
+					StartCoroutine(updateSight(sight_index_x-1, sight_index_y, growth+1, strength-1, flipped));
 					
 					if (growth == 2){
-						updateSight(sight_index_x-1, sight_index_y-1, 0, strength-1, flipped);
-						updateSight(sight_index_x-1, sight_index_y+1, 0, strength-1, flipped);
+						StartCoroutine(updateSight(sight_index_x-1, sight_index_y-1, 0, strength-1, flipped));
+						StartCoroutine(updateSight(sight_index_x-1, sight_index_y+1, 0, strength-1, flipped));
 					}
 				}
 			} else {
@@ -228,11 +231,11 @@ public class AI_Grid : MonoBehaviour
 					else
 						patrol_grid[sight_index_x,sight_index_y] = 22;
 						
-					updateSight(sight_index_x+1, sight_index_y, growth+1, strength-1, flipped);
+					StartCoroutine(updateSight(sight_index_x+1, sight_index_y, growth+1, strength-1, flipped));
 					
 					if (growth == 2){
-						updateSight(sight_index_x+1, sight_index_y-1, 0, strength-1, flipped);
-						updateSight(sight_index_x+1, sight_index_y+1, 0, strength-1, flipped);
+						StartCoroutine(updateSight(sight_index_x+1, sight_index_y-1, 0, strength-1, flipped));
+						StartCoroutine(updateSight(sight_index_x+1, sight_index_y+1, 0, strength-1, flipped));
 					}
 					
 				}
