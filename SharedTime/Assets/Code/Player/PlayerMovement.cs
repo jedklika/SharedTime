@@ -684,7 +684,10 @@ public class PlayerMovement : MonoBehaviour
         //Jumping
         if (Input.GetKeyDown(KeyCode.Space) && jumpCharge > 0 && characterEnabled)
         {
-            rb.AddForce(Vector2.up * jumpHeight, ForceMode2D.Impulse);
+            //rb.AddForce(Vector2.up * jumpHeight, ForceMode2D.Impulse);
+			
+			rb.velocity = new Vector2(rb.velocity.x, jumpHeight);
+			
 			jumpCharge-=1;
 			jump_delay = 0.0f;
             isJumping = true;
