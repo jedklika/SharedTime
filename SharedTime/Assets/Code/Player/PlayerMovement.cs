@@ -687,7 +687,6 @@ public class PlayerMovement : MonoBehaviour
             //rb.AddForce(Vector2.up * jumpHeight, ForceMode2D.Impulse);
 			
 			rb.velocity = new Vector2(rb.velocity.x, jumpHeight);
-			
 			jumpCharge-=1;
 			jump_delay = 0.0f;
             isJumping = true;
@@ -741,12 +740,9 @@ public class PlayerMovement : MonoBehaviour
         //Acquiring keys
         if (col.gameObject.CompareTag("key"))
         {
-            gm.keys++;
-            Destroy(col.gameObject);
-			StartCoroutine(Key());
-
+            addKey();
+			Destroy(col.gameObject);
 		}
-
 
         //Going through doors
         if (col.gameObject.CompareTag("Door") && gm.keys <= 0)
@@ -774,16 +770,12 @@ public class PlayerMovement : MonoBehaviour
 		
         if (col.gameObject.CompareTag("LowDanger"))
         {
-            gm.setDamage(20);
-            //Debug.Log(gm.playerHealth);
-			StartCoroutine(Danger());
+            dangerHit(20);
 		}
 		
 		if (col.gameObject.CompareTag("HighDanger"))
         {
-            gm.setDamage(50);
-            //Debug.Log(gm.playerHealth);
-			StartCoroutine(Danger());
+            dangerHit(50);
 		}
 
         if (col.gameObject.CompareTag("End"))
@@ -796,13 +788,51 @@ public class PlayerMovement : MonoBehaviour
         //Acquiring health kit
         if (col.gameObject.CompareTag("Health"))
         {
-            gm.setDamage(-10);
-            Destroy(col.gameObject);
-            //Debug.Log(gm.playerHealth);
-			StartCoroutine(Health());
+            addHealth(15);
+			Destroy(col.gameObject);
+		}
+		
+		//Ammo
+		if (col.gameObject.CompareTag("ModernAmmo")){
+			ammo+=5;
+			Destroy(col.gameObject);
+		}
+		
+		if (col.gameObject.CompareTag("C4Ammo")){
+			c4_ammo+=2;
+			Destroy(col.gameObject);
+		}
+		
+		if (col.gameObject.CompareTag("FlintlockAmmo")){
+			flintlock_ammo+=5;
+			Destroy(col.gameObject);
+		}
+		
+		//More for visual bonuses
+		if (col.gameObject.CompareTag("Treasure1")){
+			Destroy(col.gameObject);
 		}
     }
-
+	
+	public void addKey(){
+		gm.keys++;
+        //Destroy(col.gameObject);
+		StartCoroutine(Key());
+	}
+	
+	public void dangerHit(int danger_damage){
+		gm.setDamage(danger_damage);
+        //Debug.Log(gm.playerHealth);
+		StartCoroutine(Danger());
+	}
+	
+	public void addHealth(int health_add){
+		gm.setDamage(-health_add);
+        //Destroy(col.gameObject);
+        //Debug.Log(gm.playerHealth);
+		StartCoroutine(Health());
+	}
+	
 	IEnumerator Locked()
 	{
 		UI.InfoText.text = "This is pointless, you land lover we are missing the key";

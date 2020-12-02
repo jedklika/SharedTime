@@ -24,6 +24,10 @@ TagManager:
   - LowDanger
   - HighDanger
   - AI_Field
+  - ModernAmmo
+  - C4Ammo
+  - FlintlockAmmo
+  - Treasure1
   layers:
   - Default
   - TransparentFX

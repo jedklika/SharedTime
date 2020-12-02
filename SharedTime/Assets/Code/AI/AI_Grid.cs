@@ -102,7 +102,7 @@ public class AI_Grid : MonoBehaviour
 		return patrol_flag;
 	}
 	
-	/*
+	
 	void OnDrawGizmos(){
 		float patrol_grid_draw_x_iteration = 0, patrol_grid_draw_y_iteration = 0;
 		int x_index = 0, y_index = 0;
@@ -141,7 +141,7 @@ public class AI_Grid : MonoBehaviour
 			patrol_grid_draw_x_iteration+=field_cut_rate;
 		}
 	}
-	*/
+	
 	
 	bool checkForGround(float x_to_raycast, float y_to_raycast){
 		Vector2 ground_spot = new Vector2(x_to_raycast, y_to_raycast);
@@ -197,11 +197,11 @@ public class AI_Grid : MonoBehaviour
 		return patrol_grid[self_index_x+x_offset,self_index_y+y_offset] == 10;
 	}
 	
-	public void updateSight(int strength, bool flipped){
-		StartCoroutine(updateSight(self_index_x, self_index_y, 0, strength, flipped));
+	public void updateSight(int strength, int notice, bool flipped){
+		StartCoroutine(updateSight(self_index_x, self_index_y, 0, strength, notice, flipped));
 	}
 	
-	IEnumerator updateSight(int sight_index_x, int sight_index_y, int growth, int strength, bool flipped){
+	IEnumerator updateSight(int sight_index_x, int sight_index_y, int growth, int strength, int notice, bool flipped){
 		yield return new WaitForSeconds(0.001f);
 		
 		if (sight_index_x >= 1 &&
@@ -212,30 +212,30 @@ public class AI_Grid : MonoBehaviour
 				
 			if (flipped){
 				if (patrol_grid[sight_index_x,sight_index_y] != 10){
-					if (strength > 7)
+					if (strength > notice)
 						patrol_grid[sight_index_x,sight_index_y] = 21;
 					else
 						patrol_grid[sight_index_x,sight_index_y] = 22;
 					
-					StartCoroutine(updateSight(sight_index_x-1, sight_index_y, growth+1, strength-1, flipped));
+					StartCoroutine(updateSight(sight_index_x-1, sight_index_y, growth+1, strength-1, notice, flipped));
 					
-					if (growth == 2){
-						StartCoroutine(updateSight(sight_index_x-1, sight_index_y-1, 0, strength-1, flipped));
-						StartCoroutine(updateSight(sight_index_x-1, sight_index_y+1, 0, strength-1, flipped));
+					if (growth == 1){
+						StartCoroutine(updateSight(sight_index_x-1, sight_index_y-1, 0, strength-1, notice, flipped));
+						StartCoroutine(updateSight(sight_index_x-1, sight_index_y+1, 0, strength-1, notice, flipped));
 					}
 				}
 			} else {
 				if (patrol_grid[sight_index_x,sight_index_y] != 10){
-					if (strength > 7)
+					if (strength > notice)
 						patrol_grid[sight_index_x,sight_index_y] = 21;
 					else
 						patrol_grid[sight_index_x,sight_index_y] = 22;
 						
-					StartCoroutine(updateSight(sight_index_x+1, sight_index_y, growth+1, strength-1, flipped));
+					StartCoroutine(updateSight(sight_index_x+1, sight_index_y, growth+1, strength-1, notice, flipped));
 					
-					if (growth == 2){
-						StartCoroutine(updateSight(sight_index_x+1, sight_index_y-1, 0, strength-1, flipped));
-						StartCoroutine(updateSight(sight_index_x+1, sight_index_y+1, 0, strength-1, flipped));
+					if (growth == 1){
+						StartCoroutine(updateSight(sight_index_x+1, sight_index_y-1, 0, strength-1, notice, flipped));
+						StartCoroutine(updateSight(sight_index_x+1, sight_index_y+1, 0, strength-1, notice, flipped));
 					}
 					
 				}

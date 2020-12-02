@@ -20,6 +20,9 @@ public class Patrol : MonoBehaviour
 	
 	AI_Grid grid;
 	
+	public int sight_squares;
+	public int strong_squares;
+	
     // Start is called before the first frame update
     void Start()
     {
@@ -40,7 +43,7 @@ public class Patrol : MonoBehaviour
 	
 	public void updateMove(){
 		if (FoeFlipped){
-			grid.updateSight(20, FoeFlipped);
+			grid.updateSight(sight_squares, strong_squares, FoeFlipped);
 			
 			//GO LEFT
 			transform.position = Vector2.MoveTowards(transform.position, new Vector2(transform.position.x - 5f, transform.position.y), speed*Time.deltaTime);
@@ -50,7 +53,7 @@ public class Patrol : MonoBehaviour
 				FoeFlipped = S.flipX = false;
 			
 		} else {
-			grid.updateSight(22, FoeFlipped);
+			grid.updateSight(sight_squares, strong_squares, FoeFlipped);
 			
 			//GO RIGHT
 			transform.position = Vector2.MoveTowards(transform.position, new Vector2(transform.position.x + 5f, transform.position.y), speed*Time.deltaTime);
