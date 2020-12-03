@@ -4,6 +4,11 @@ using UnityEngine;
 
 public class AI_Grid : MonoBehaviour
 {
+	public Transform playerPosition;
+	
+	bool is_suspicious = false;
+	public SpriteRenderer question;
+	
 	//USE THIS FOR AI PATHFINDING
 	public BoxCollider2D patrolField;
 	public float field_cut_rate;
@@ -31,6 +36,8 @@ public class AI_Grid : MonoBehaviour
 		
 		P = GetComponent<Patrol>();
 		A = GetComponent<Attack>();
+		
+		A.enabled = false;
     }
 
     // Update is called once per frame
@@ -38,16 +45,28 @@ public class AI_Grid : MonoBehaviour
     {
         switch (updatePatrolGrid()){
 			case 1:
-				Debug.Log("Suspicious");
+				//Debug.Log("Suspicious");
+				if (!is_suspicious)
+					StartCoroutine(suspicious());
 			break;
 			case 2:
-				Debug.Log("Spotted");
+				//Debug.Log("Spotted");
 				P.enabled = false;
 				A.enabled = true;
 			break;
 			default:
-				P.enabled = true;
-				A.enabled = false;
+				//P.enabled = true;
+				
+				if (A.enabled){
+					//CANCEL ATTACK IF FAR ENOUGH
+					float player_distance = Vector2.Distance(gameObject.transform.position, playerPosition.position);
+					
+					if (player_distance > 8f){
+						P.enabled = true;
+						A.enabled = false;
+					}
+				}
+				
 			break;
 		}
 		
@@ -56,6 +75,15 @@ public class AI_Grid : MonoBehaviour
 		else if (A.enabled)
 			A.updateAttack();
     }
+	
+	IEnumerator suspicious(){
+		//SET THE QUESTION MARK ON THEN OFF
+		question.color = Color.white;
+		is_suspicious = true;
+		yield return new WaitForSeconds(2.0f);
+		question.color = Color.clear;
+		is_suspicious = false;
+	}
 	
 	public int updatePatrolGrid(){
 		float patrol_grid_draw_x_iteration = 0, patrol_grid_draw_y_iteration = 0;
