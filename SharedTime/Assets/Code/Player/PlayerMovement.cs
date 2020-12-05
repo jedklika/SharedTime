@@ -149,7 +149,7 @@ public class PlayerMovement : MonoBehaviour
         if (gm.playerHealth <= 0)
         {
 			UI.InfoText.text = "Great now we are dead, hope you enjoy being stuck together for entirety";
-			Time.timeScale = 0;
+			SceneManager.LoadScene(0);
 		}
     }
 	
@@ -338,7 +338,7 @@ public class PlayerMovement : MonoBehaviour
 	}
 	
 	void showHeroGun(){
-		hero_gun.color = Color.white;
+		hero_gun.color = Color.black;
 	}
 	
 	void unshowHeroGun(){
@@ -781,7 +781,7 @@ public class PlayerMovement : MonoBehaviour
         if (col.gameObject.CompareTag("End"))
         {
 			UI.InfoText.text = "Time to blow this place";
-			Time.timeScale = 0;
+			SceneManager.LoadScene(0);
         }
 
 
@@ -907,6 +907,9 @@ public class PlayerMovement : MonoBehaviour
 			case 2:
 				//SetToHeroRun();
 			break;
+			case 3:
+				SetToHeroClimbStill();
+			break;
 			case 4:
 				SetToHeroClimb();
 			break;
@@ -915,6 +918,9 @@ public class PlayerMovement : MonoBehaviour
 			break;
 			case 21:
 				SetToPirateWalk();
+			break;
+			case 23:
+				SetToPirateClimbStill();
 			break;
 			case 24:
 				SetToPirateClimb();
@@ -931,12 +937,19 @@ public class PlayerMovement : MonoBehaviour
 	void SetToHeroWalk()
 	{
 		animationState = 1;
-		PlayerAnimator.Play("hero_walking");
+		changeAnimation("hero_walking");
+	}
+	
+	void SetToHeroClimbStill()
+	{
+		animationState = 3;
+		changeAnimation("hero_climb_still");
 	}
 	
 	void SetToHeroClimb()
 	{
-		
+		animationState = 4;
+		changeAnimation("hero_climbing");
 	}
 	
 	void SetToPirateIdle()
@@ -948,11 +961,18 @@ public class PlayerMovement : MonoBehaviour
 	void SetToPirateWalk()
 	{
 		animationState = 21;
-		PlayerAnimator.Play("pirate_walking");
+		changeAnimation("pirate_walking");
+	}
+	
+	void SetToPirateClimbStill()
+	{
+		animationState = 23;
+		changeAnimation("pirate_climbing_still");
 	}
 	
 	void SetToPirateClimb()
 	{
-	
+		animationState = 24;
+		changeAnimation("pirate_climbing");
 	}
 }

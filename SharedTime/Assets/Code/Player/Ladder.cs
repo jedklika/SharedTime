@@ -26,7 +26,11 @@ public class Ladder : MonoBehaviour
 				
 				player.isJumping = false;
 				other.GetComponent<Rigidbody2D>().velocity = new Vector2(0, speed);
-				player.SetAnimation(4);
+				
+				if (player.Character2)
+					player.SetAnimation(24);
+				else
+					player.SetAnimation(4);
 			}
 			else if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow))
 			{
@@ -38,14 +42,22 @@ public class Ladder : MonoBehaviour
 				
 				player.isJumping = false;
 				other.GetComponent<Rigidbody2D>().velocity = new Vector2(0, -speed);
-				player.SetAnimation(4);
+				
+				if (player.Character2)
+					player.SetAnimation(24);
+				else
+					player.SetAnimation(4);
 			}
 			else
 			{
 				if (player.onLadder)
 				{
 					other.GetComponent<Rigidbody2D>().velocity = new Vector2(0, 0f);
-					player.SetAnimation(5);
+					
+				if (player.Character2)
+					player.SetAnimation(23);
+				else
+					player.SetAnimation(3);
 				}
 			}
 		}

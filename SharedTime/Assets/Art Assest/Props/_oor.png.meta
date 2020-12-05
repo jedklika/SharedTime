@@ -1,7 +1,67 @@
 fileFormatVersion: 2
 guid: 07a3f69783444224ab7d69fd76992a10
 TextureImporter:
-  internalIDToNameTable: []
+  internalIDToNameTable:
+  - first:
+      213: 3828938469903765806
+    second: _oor_0
+  - first:
+      213: -8290917104883822768
+    second: _oor_1
+  - first:
+      213: 4191926100026715355
+    second: _oor_2
+  - first:
+      213: 5171729425272104234
+    second: _oor_3
+  - first:
+      213: -9066086746766588988
+    second: _oor_4
+  - first:
+      213: -3181437914490345581
+    second: _oor_5
+  - first:
+      213: -6981580311343486588
+    second: _oor_6
+  - first:
+      213: -3855615284440649785
+    second: _oor_7
+  - first:
+      213: -6360851349420192689
+    second: _oor_8
+  - first:
+      213: 6839800097141616220
+    second: _oor_9
+  - first:
+      213: -8525629040666953730
+    second: _oor_10
+  - first:
+      213: 5066255487782892487
+    second: _oor_11
+  - first:
+      213: -9140892163717698952
+    second: _oor_12
+  - first:
+      213: 7576256126815118081
+    second: _oor_13
+  - first:
+      213: -5001112614584954897
+    second: _oor_14
+  - first:
+      213: 5998938754433156869
+    second: _oor_15
+  - first:
+      213: 2787729356197994958
+    second: _oor_16
+  - first:
+      213: -3428781262285937597
+    second: _oor_17
+  - first:
+      213: 2452417435869904465
+    second: _oor_18
+  - first:
+      213: 5695875456196780533
+    second: _oor_19
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -41,7 +101,7 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 1
+  spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
@@ -73,9 +133,147 @@ TextureImporter:
     overridden: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
-    sprites: []
+    sprites:
+    - serializedVersion: 2
+      name: _oor_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 256
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e211175704f132530800000000000000
+      internalID: 3828938469903765806
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: _oor_1
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 256
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 05f803df1deb0fc80800000000000000
+      internalID: -8290917104883822768
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: _oor_2
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 128
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: bdce7c40496bc2a30800000000000000
+      internalID: 4191926100026715355
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: _oor_3
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 128
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a2567c3e28ca5c740800000000000000
+      internalID: 5171729425272104234
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: _oor_4
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4c3c914532ace2280800000000000000
+      internalID: -9066086746766588988
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: _oor_5
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 0
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 397e7df921349d3d0800000000000000
+      internalID: -3181437914490345581
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
