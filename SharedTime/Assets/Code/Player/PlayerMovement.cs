@@ -631,8 +631,10 @@ public class PlayerMovement : MonoBehaviour
 				//Debug.Log(pushHit1.distance);
 				
 				if (pushHit1.distance < 0.5f){
-					if (pushHit1.collider.CompareTag("Ground")){
+					if (pushHit1.collider.CompareTag("Ground") || pushHit1.collider.CompareTag("explodableDoor")){
 						return false;
+					} else if (pushHit1.collider.CompareTag("Door")){
+						return gm.keys > 0;
 					} else {
 						return Character2;
 					}
@@ -643,8 +645,10 @@ public class PlayerMovement : MonoBehaviour
 				//Debug.Log(pushHit.distance);
 				
 				if (pushHit2.distance < 0.5f){
-					if (pushHit2.collider.CompareTag("Ground")){
+					if (pushHit2.collider.CompareTag("Ground") || pushHit1.collider.CompareTag("explodableDoor")){
 						return false;
+					} else if (pushHit1.collider.CompareTag("Door")){
+						return gm.keys > 0;
 					} else {
 						return Character2;
 					}
