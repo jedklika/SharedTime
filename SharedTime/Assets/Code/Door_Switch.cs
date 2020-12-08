@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class Door_Switch : MonoBehaviour
 {
-	public GameObject door_to_delete;
+	public GameObject door;
+	public bool is_delete;
 	
     // Start is called before the first frame update
     void Start()
@@ -21,9 +22,14 @@ public class Door_Switch : MonoBehaviour
 	void OnTriggerEnter2D(Collider2D other)
     {
 		if (other.CompareTag("Player")){
-			//Debug.Log("Destroying Door");
-			Destroy(door_to_delete);
-			Destroy(gameObject);
+			if (is_delete){
+				//Debug.Log("Destroying Door");
+				Destroy(door);
+				Destroy(gameObject);
+			} else {
+				door.SetActive(true);
+				Destroy(gameObject);
+			}
 		}
 	}
 }
