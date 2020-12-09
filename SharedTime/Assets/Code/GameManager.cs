@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-	public float playerHealth = 90;
+	public float playerHealth = 100;
 	public float playerMaxHealth = 100;
-
+	
 	public float SprintTime = 30;
 	public bool sprint;
 	private bool exhausted = false;
