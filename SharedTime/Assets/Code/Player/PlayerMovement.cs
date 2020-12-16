@@ -10,6 +10,9 @@ public class PlayerMovement : MonoBehaviour
     Rigidbody2D rb;
     public float Speed;
 	
+	public ParticleSystem transformSparkles;
+	public ParticleSystem transformAura;
+	
 	public float WalkSpeed1;
     public float RunSpeed1;
 	
@@ -82,6 +85,7 @@ public class PlayerMovement : MonoBehaviour
 	public int flintlock_ammo;
 	public int max_flintlock_ammo;
 	public GameObject flintlockBulletPrefab;
+	public ParticleSystem flintlockSmoke;
 	
 	public int flintlock_capacity;
 	public int max_flintlock_capacity;
@@ -247,6 +251,11 @@ public class PlayerMovement : MonoBehaviour
 	
 	//CONTROLS AND UPDATE FUNCTIONS
 	IEnumerator updateCharacterSwitch(){
+		
+		//SHOW PRETTY LIGHTS
+		transformSparkles.Play();
+		transformAura.Play();
+		
 		//SWITCH TO CHARACTER 2
 		if (!Character2){
 			characterEnabled = false;
@@ -494,10 +503,12 @@ public class PlayerMovement : MonoBehaviour
 			
 			if (isFlipped){
 				StartCoroutine(gm.createMovingAttack(rb.position, flintlockBulletPrefab, new Vector2(-0.6f, 0.1f), 0.0f, target_position, 0.05f, 1.1f));
+				flintlockSmoke.Play();
 				rb.AddForce(Vector2.right * 7.0f, ForceMode2D.Impulse);
 				disableTemp(0.12f);
 			} else {
 				StartCoroutine(gm.createMovingAttack(rb.position, flintlockBulletPrefab, new Vector2(0.6f, 0.1f), 0.0f, target_position, 0.05f, 1.1f));
+				flintlockSmoke.Play();
 				rb.AddForce(Vector2.left * 7.0f, ForceMode2D.Impulse);
 				disableTemp(0.12f);
 			}
