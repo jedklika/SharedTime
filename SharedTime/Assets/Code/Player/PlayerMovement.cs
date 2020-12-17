@@ -28,7 +28,6 @@ public class PlayerMovement : MonoBehaviour
 		
     private float timeBtwAttack;
     public float startTimeBtwAttack;
-    public Transform attackPos;
     public LayerMask whatIsEnemies;
     public float attackRange;
     public int damage;
